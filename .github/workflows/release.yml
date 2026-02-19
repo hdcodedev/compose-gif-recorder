@@ -103,6 +103,7 @@ jobs:
           cd lib && ./gradlew publish --no-daemon --no-build-cache --stacktrace
 
       - name: Create Git Tag
+        if: ${{ steps.secrets_check.outputs.can_publish == 'true' }}
         run: |
           VERSION="${{ steps.version.outputs.release_version }}"
           git config user.name "github-actions[bot]"
