@@ -100,7 +100,7 @@ jobs:
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
         run: |
           echo "Publishing release version: ${{ steps.version.outputs.release_version }}"
-          cd lib && ./gradlew publish --no-daemon --no-build-cache --stacktrace
+          cd lib && ./gradlew publishAllPublicationsToMavenCentralRepository --no-daemon --no-build-cache --stacktrace
 
       - name: Create Git Tag
         if: ${{ steps.secrets_check.outputs.can_publish == 'true' }}

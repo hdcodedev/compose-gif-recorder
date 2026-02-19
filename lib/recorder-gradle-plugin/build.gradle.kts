@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
     id("java-gradle-plugin")
-    id("maven-publish")
+    alias(libs.plugins.vanniktech.publish)
 }
 
 kotlin {
@@ -27,6 +27,10 @@ tasks.named("processResources") {
     dependsOn(generateVersionResource)
 }
 
+tasks.withType<Jar>().configureEach {
+    dependsOn(generateVersionResource)
+}
+
 gradlePlugin {
     plugins {
         create("composeGifRecorder") {
@@ -46,17 +50,20 @@ dependencies {
     testImplementation(libs.junit4)
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            named<MavenPublication>("pluginMaven") {
-                artifactId = "compose-gif-recorder-gradle-plugin"
-                pom {
-                    name.set("Compose GIF Recorder Gradle Plugin")
-                    description.set("Gradle plugin for compose-gif-recorder")
-                    url.set("https://github.com/hdcodedev/compose-gif-recorder")
-                }
-            }
-        }
+mavenPublishing {
+    configure(com.vanniktech.maven.publish.GradlePlugin(
+        javadocJar = com.vanniktech.maven.publish.JavadocJar.None(),
+        sourcesJar = true
+    ))
+
+    coordinates(
+        groupId = ProjectConfig.group,
+        artifactId = "compose-gif-recorder-gradle-plugin",
+        version = ProjectConfig.version
+    )
+
+    pom {
+        name.set("Compose GIF Recorder Gradle Plugin")
+        description.set("Gradle plugin for compose-gif-recorder")
     }
 }
