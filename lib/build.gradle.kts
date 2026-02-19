@@ -7,7 +7,7 @@ plugins {
 
 allprojects {
     group = "io.github.hdcodedev"
-    version = "0.1.0"
+    version = providers.gradleProperty("compose.gif.recorder.version").get()
 
     repositories {
         google()
