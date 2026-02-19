@@ -144,7 +144,7 @@ jobs:
           cd lib && ./gradlew publish --no-daemon --stacktrace
 
       - name: Comment on commit
-        if: ${{ steps.version.outputs.is_snapshot == 'true' }}
+        if: ${{ steps.version.outputs.is_snapshot == 'true' && steps.secrets_check.outputs.can_publish == 'true' }}
         uses: actions/github-script@v7
         with:
           script: |
