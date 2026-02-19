@@ -1,5 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
+    `maven-publish`
+    signing
     alias(libs.plugins.vanniktech.publish)
 }
 
@@ -15,7 +17,10 @@ mavenPublishing {
     )
 
     pom {
-        name.set("Compose GIF Recorder Annotations")
-        description.set("Annotation API for compose-gif-recorder")
+        ProjectPublishing.configurePom(
+            pom = this,
+            moduleName = "Compose GIF Recorder Annotations",
+            moduleDescription = "Annotation API for compose-gif-recorder"
+        )
     }
 }

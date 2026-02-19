@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.compose)
+    `maven-publish`
+    signing
     alias(libs.plugins.vanniktech.publish)
 }
 
@@ -22,7 +24,10 @@ mavenPublishing {
     )
 
     pom {
-        name.set("Compose GIF Recorder Core")
-        description.set("Core models and contracts for compose-gif-recorder")
+        ProjectPublishing.configurePom(
+            pom = this,
+            moduleName = "Compose GIF Recorder Core",
+            moduleDescription = "Core models and contracts for compose-gif-recorder"
+        )
     }
 }

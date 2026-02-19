@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.compose)
+    `maven-publish`
+    signing
     alias(libs.plugins.vanniktech.publish)
 }
 
@@ -46,9 +48,9 @@ dependencies {
 
 mavenPublishing {
     configure(com.vanniktech.maven.publish.AndroidSingleVariantLibrary(
+        javadocJar = com.vanniktech.maven.publish.JavadocJar.None(),
+        sourcesJar = com.vanniktech.maven.publish.SourcesJar.Sources(),
         variant = "release",
-        sourcesJar = true,
-        publishJavadocJar = false
     ))
 
     coordinates(
@@ -58,7 +60,10 @@ mavenPublishing {
     )
 
     pom {
-        name.set("Compose GIF Recorder Android")
-        description.set("Android deterministic frame capture runtime for compose-gif-recorder")
+        ProjectPublishing.configurePom(
+            pom = this,
+            moduleName = "Compose GIF Recorder Android",
+            moduleDescription = "Android deterministic frame capture runtime for compose-gif-recorder"
+        )
     }
 }
