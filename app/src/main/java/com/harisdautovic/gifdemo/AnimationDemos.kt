@@ -47,7 +47,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.harisdautovic.gifdemo.ui.theme.DemoTheme
-import io.github.dautovicharis.composegif.annotations.RecordGif
+import io.github.hdcodedev.composegif.annotations.RecordGif
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.cos

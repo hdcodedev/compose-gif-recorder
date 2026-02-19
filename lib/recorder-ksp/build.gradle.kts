@@ -26,7 +26,7 @@ publishing {
             pom {
                 name.set("Compose GIF Recorder KSP")
                 description.set("KSP processor for compose-gif-recorder")
-                url.set("https://github.com/dautovicharis/charts")
+                url.set("https://github.com/hdcodedev/compose-gif-recorder")
             }
         }
     }

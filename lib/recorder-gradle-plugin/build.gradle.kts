@@ -11,8 +11,8 @@ kotlin {
 gradlePlugin {
     plugins {
         create("composeGifRecorder") {
-            id = "io.github.dautovicharis.compose-gif-recorder"
-            implementationClass = "io.github.dautovicharis.composegif.plugin.ComposeGifRecorderPlugin"
+            id = "io.github.hdcodedev.compose-gif-recorder"
+            implementationClass = "io.github.hdcodedev.composegif.plugin.ComposeGifRecorderPlugin"
             displayName = "Compose GIF Recorder Plugin"
             description = "Generates deterministic GIFs from annotated Compose scenarios"
         }
@@ -27,15 +27,16 @@ dependencies {
     testImplementation(libs.junit4)
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            from(components["java"])
-            artifactId = "compose-gif-recorder-gradle-plugin"
-            pom {
-                name.set("Compose GIF Recorder Gradle Plugin")
-                description.set("Gradle plugin for compose-gif-recorder")
-                url.set("https://github.com/dautovicharis/charts")
+afterEvaluate {
+    publishing {
+        publications {
+            named<MavenPublication>("pluginMaven") {
+                artifactId = "compose-gif-recorder-gradle-plugin"
+                pom {
+                    name.set("Compose GIF Recorder Gradle Plugin")
+                    description.set("Gradle plugin for compose-gif-recorder")
+                    url.set("https://github.com/hdcodedev/compose-gif-recorder")
+                }
             }
         }
     }

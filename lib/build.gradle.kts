@@ -6,7 +6,7 @@ plugins {
 }
 
 allprojects {
-    group = "io.github.dautovicharis"
+    group = "io.github.hdcodedev"
     version = "0.1.0-SNAPSHOT"
 
     repositories {

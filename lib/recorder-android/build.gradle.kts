@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "io.github.dautovicharis.composegif.android"
+    namespace = "io.github.hdcodedev.composegif.android"
     compileSdk = 36
 
     defaultConfig {
@@ -60,7 +60,7 @@ publishing {
             pom {
                 name.set("Compose GIF Recorder Android")
                 description.set("Android deterministic frame capture runtime for compose-gif-recorder")
-                url.set("https://github.com/dautovicharis/charts")
+                url.set("https://github.com/hdcodedev/compose-gif-recorder")
             }
         }
     }
