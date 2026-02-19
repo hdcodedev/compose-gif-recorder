@@ -54,7 +54,7 @@ dependencies {
 
 mavenPublishing {
     configure(com.vanniktech.maven.publish.GradlePlugin(
-        javadocJar = com.vanniktech.maven.publish.JavadocJar.None(),
+        javadocJar = com.vanniktech.maven.publish.JavadocJar.Empty(),
         sourcesJar = com.vanniktech.maven.publish.SourcesJar.Sources()
     ))
 
