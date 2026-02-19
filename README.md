@@ -1,5 +1,15 @@
 # compose-gif-recorder
 
+<p align="center">
+  <a href="https://central.sonatype.com/repository/maven-snapshots/io/github/hdcodedev/compose-gif-recorder-annotations/maven-metadata.xml">
+    <img src="https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fio%2Fgithub%2Fhdcodedev%2Fcompose-gif-recorder-annotations%2Fmaven-metadata.xml&label=Snapshots&color=4285F4" />
+  </a>
+  <img src="https://img.shields.io/badge/Jetpack_Compose-1.10.3-4285F4?logo=jetpackcompose" />
+  <img src="https://img.shields.io/badge/Kotlin-2.3.10-0095D5?logo=kotlin" />
+  <img src="https://img.shields.io/badge/AGP-9.0.1-2E7D32?logo=android" />
+  <img src="https://img.shields.io/badge/KSP-2.3.0-FF6F00" />
+</p>
+
 Standalone workspace for deterministic GIF capture from annotated Compose composables.
 
 ## Layout
