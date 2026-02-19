@@ -19,12 +19,6 @@ allprojects {
 subprojects {
     plugins.withId("com.vanniktech.maven.publish") {
         extensions.configure<com.vanniktech.maven.publish.MavenPublishBaseExtension> {
-            publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.CENTRAL_PORTAL)
-            val signingKey = providers.gradleProperty("signingInMemoryKey")
-            if (signingKey.orNull != null) {
-                signAllPublications()
-            }
-
             pom {
                 url.set("https://github.com/hdcodedev/compose-gif-recorder")
                 licenses {
