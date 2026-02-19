@@ -43,14 +43,14 @@ jobs:
         id: version
         run: |
           set -euo pipefail
-          BUILD_FILE="lib/build.gradle.kts"
-          if [ ! -f "$BUILD_FILE" ]; then
-            echo "Build file not found: $BUILD_FILE" >&2
+          CONFIG_FILE="lib/buildSrc/src/main/kotlin/ProjectConfig.kt"
+          if [ ! -f "$CONFIG_FILE" ]; then
+            echo "Config file not found: $CONFIG_FILE" >&2
             exit 1
           fi
-          VERSION=$(grep -E '^\s*version\s*=\s*"' "$BUILD_FILE" | sed -E 's/.*"([^"]+)".*/\1/' | tr -d '\r' | xargs)
+          VERSION=$(grep -E '^\s*const val version\s*=\s*"' "$CONFIG_FILE" | sed -E 's/.*"([^"]+)".*/\1/' | tr -d '\r' | xargs)
           if [ -z "${VERSION:-}" ]; then
-            echo "Failed to parse version from $BUILD_FILE" >&2
+            echo "Failed to parse version from $CONFIG_FILE" >&2
             exit 1
           fi
           echo "release_version=${VERSION}" >> "$GITHUB_OUTPUT"
