@@ -1,5 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
+    `maven-publish`
+    signing
     alias(libs.plugins.vanniktech.publish)
 }
 
@@ -26,7 +28,10 @@ mavenPublishing {
     )
 
     pom {
-        name.set("Compose GIF Recorder KSP")
-        description.set("KSP processor for compose-gif-recorder")
+        ProjectPublishing.configurePom(
+            pom = this,
+            moduleName = "Compose GIF Recorder KSP",
+            moduleDescription = "KSP processor for compose-gif-recorder"
+        )
     }
 }

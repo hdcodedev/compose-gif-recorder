@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
     id("java-gradle-plugin")
+    `maven-publish`
+    signing
     alias(libs.plugins.vanniktech.publish)
 }
 
@@ -53,7 +55,7 @@ dependencies {
 mavenPublishing {
     configure(com.vanniktech.maven.publish.GradlePlugin(
         javadocJar = com.vanniktech.maven.publish.JavadocJar.None(),
-        sourcesJar = true
+        sourcesJar = com.vanniktech.maven.publish.SourcesJar.Sources()
     ))
 
     coordinates(
@@ -63,7 +65,10 @@ mavenPublishing {
     )
 
     pom {
-        name.set("Compose GIF Recorder Gradle Plugin")
-        description.set("Gradle plugin for compose-gif-recorder")
+        ProjectPublishing.configurePom(
+            pom = this,
+            moduleName = "Compose GIF Recorder Gradle Plugin",
+            moduleDescription = "Gradle plugin for compose-gif-recorder"
+        )
     }
 }
