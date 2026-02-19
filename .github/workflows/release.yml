@@ -139,7 +139,7 @@ jobs:
             ].join('\n');
 
             // Create a comment on the commit
-            github.rest.repos.createCommitComment({
+            await github.rest.repos.createCommitComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               commit_sha: context.sha,
