@@ -16,7 +16,7 @@ import java.io.IOException
 import javax.inject.Inject
 import kotlin.math.max
 
-private const val GENERATED_REGISTRY_FILE = "generated/ksp/debug/kotlin/io/github/dautovicharis/composegif/generated/GeneratedGifScenarioRegistry.kt"
+private const val GENERATED_REGISTRY_FILE = "generated/ksp/debug/kotlin/io/github/hdcodedev/composegif/generated/GeneratedGifScenarioRegistry.kt"
 private const val GENERATED_REGISTRY_CLASS = "io.github.hdcodedev.composegif.generated.GeneratedGifScenarioRegistry"
 private const val DEFAULT_TEST_CLASS = "io.github.hdcodedev.composegif.android.GifFrameCaptureTest"
 private const val DEFAULT_LIBRARY_VERSION = "0.1.0-SNAPSHOT"
