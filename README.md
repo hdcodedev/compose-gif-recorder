@@ -39,7 +39,7 @@ Example:
 
 ```kotlin
 import androidx.compose.runtime.Composable
-import io.github.dautovicharis.composegif.annotations.RecordGif
+import io.github.hdcodedev.composegif.annotations.RecordGif
 
 @Composable
 @RecordGif(name = "my_new_animation", durationMs = 2200)

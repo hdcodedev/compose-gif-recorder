@@ -31,4 +31,4 @@ androidx-compose-material3 = { group = "androidx.compose.material3", name = "mat
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-compose-gif-recorder = { id = "io.github.dautovicharis.compose-gif-recorder", version.ref = "composeGifRecorder" }
+compose-gif-recorder = { id = "io.github.hdcodedev.compose-gif-recorder", version.ref = "composeGifRecorder" }

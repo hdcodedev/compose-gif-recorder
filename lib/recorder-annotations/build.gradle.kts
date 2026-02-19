@@ -15,7 +15,7 @@ publishing {
             pom {
                 name.set("Compose GIF Recorder Annotations")
                 description.set("Annotation API for compose-gif-recorder")
-                url.set("https://github.com/dautovicharis/charts")
+                url.set("https://github.com/hdcodedev/compose-gif-recorder")
             }
         }
     }
