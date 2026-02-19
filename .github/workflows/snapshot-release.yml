@@ -134,14 +134,22 @@ jobs:
       - name: Publish snapshot to Maven Central
         if: ${{ steps.version.outputs.is_snapshot == 'true' && steps.secrets_check.outputs.can_publish == 'true' }}
         env:
-          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
-          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
-          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_IN_MEMORY_KEY }}
-          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.SIGNING_KEY_ID }}
-          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
+          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          SIGNING_IN_MEMORY_KEY: ${{ secrets.SIGNING_IN_MEMORY_KEY }}
+          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
         run: |
+          set -euo pipefail
           echo "Publishing snapshot version: ${{ steps.version.outputs.snapshot_version }}"
-          cd lib && ./gradlew publishAllPublicationsToMavenCentralRepository --no-daemon --stacktrace
+          cd lib
+          ./gradlew publishAllPublicationsToMavenCentralRepository \
+            -PmavenCentralUsername="${MAVEN_CENTRAL_USERNAME}" \
+            -PmavenCentralPassword="${MAVEN_CENTRAL_PASSWORD}" \
+            -PsigningInMemoryKey="${SIGNING_IN_MEMORY_KEY}" \
+            -PsigningInMemoryKeyId="${SIGNING_KEY_ID}" \
+            -PsigningInMemoryKeyPassword="${SIGNING_PASSWORD}" \
+            --no-daemon --stacktrace
 
       - name: Comment on commit
         if: ${{ steps.version.outputs.is_snapshot == 'true' && steps.secrets_check.outputs.can_publish == 'true' }}
