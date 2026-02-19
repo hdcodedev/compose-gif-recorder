@@ -19,7 +19,7 @@ import kotlin.math.max
 private const val GENERATED_REGISTRY_FILE = "generated/ksp/debug/kotlin/io/github/hdcodedev/composegif/generated/GeneratedGifScenarioRegistry.kt"
 private const val GENERATED_REGISTRY_CLASS = "io.github.hdcodedev.composegif.generated.GeneratedGifScenarioRegistry"
 private const val DEFAULT_TEST_CLASS = "io.github.hdcodedev.composegif.android.GifFrameCaptureTest"
-private const val DEFAULT_LIBRARY_VERSION = "0.1.0-SNAPSHOT"
+private const val DEFAULT_LIBRARY_VERSION = "0.1.0"
 private const val DEFAULT_COMPOSE_UI_VERSION = "1.10.3"
 private const val DEFAULT_REMOTE_SUBDIR = "gif-recorder"
 
