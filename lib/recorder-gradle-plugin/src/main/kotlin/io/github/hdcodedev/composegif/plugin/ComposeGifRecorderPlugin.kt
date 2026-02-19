@@ -25,8 +25,7 @@ private val DEFAULT_LIBRARY_VERSION: String by lazy {
     ComposeGifRecorderPlugin::class.java
         .classLoader
         .getResourceAsStream("compose-gif-recorder.version")
-        ?.bufferedReader()
-        ?.readText()
+        ?.use { it.bufferedReader().readText() }
         ?.trim()
         ?: error("compose-gif-recorder.version resource not found")
 }
