@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.compose)
-    id("maven-publish")
+    alias(libs.plugins.vanniktech.publish)
 }
 
 kotlin {
@@ -14,16 +14,15 @@ dependencies {
     testImplementation(libs.junit4)
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            from(components["java"])
-            artifactId = "compose-gif-recorder-core"
-            pom {
-                name.set("Compose GIF Recorder Core")
-                description.set("Core models and contracts for compose-gif-recorder")
-                url.set("https://github.com/hdcodedev/compose-gif-recorder")
-            }
-        }
+mavenPublishing {
+    coordinates(
+        groupId = ProjectConfig.group,
+        artifactId = "compose-gif-recorder-core",
+        version = ProjectConfig.version
+    )
+
+    pom {
+        name.set("Compose GIF Recorder Core")
+        description.set("Core models and contracts for compose-gif-recorder")
     }
 }

@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.vanniktech.publish) apply false
 }
 
 allprojects {
@@ -12,5 +13,40 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+    }
+}
+
+subprojects {
+    plugins.withId("com.vanniktech.maven.publish") {
+        extensions.configure<com.vanniktech.maven.publish.MavenPublishBaseExtension> {
+            publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.CENTRAL_PORTAL)
+            val signingKey = providers.gradleProperty("signingInMemoryKey")
+                .orElse(providers.environmentVariable("ORG_GRADLE_PROJECT_signingInMemoryKey"))
+            if (signingKey.isPresent) {
+                signAllPublications()
+            }
+
+            pom {
+                url.set("https://github.com/hdcodedev/compose-gif-recorder")
+                licenses {
+                    license {
+                        name.set("Apache-2.0")
+                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("hdcodedev")
+                        name.set("hdcodedev")
+                        url.set("https://github.com/hdcodedev")
+                    }
+                }
+                scm {
+                    url.set("https://github.com/hdcodedev/compose-gif-recorder")
+                    connection.set("scm:git:git://github.com/hdcodedev/compose-gif-recorder.git")
+                    developerConnection.set("scm:git:ssh://git@github.com/hdcodedev/compose-gif-recorder.git")
+                }
+            }
+        }
     }
 }

@@ -2,6 +2,7 @@
 agp = "9.0.1"
 kotlin = "2.3.10"
 ksp = "2.3.0"
+vanniktech-publish = "0.30.0"
 compose-ui = "1.10.3"
 activity-compose = "1.12.4"
 androidx-test = "1.7.0"
@@ -32,3 +33,4 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 gradle-plugin-publish = { id = "java-gradle-plugin" }
 maven-publish = { id = "maven-publish" }
+vanniktech-publish = { id = "com.vanniktech.maven.publish", version.ref = "vanniktech-publish" }

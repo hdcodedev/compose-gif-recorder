@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.compose)
-    id("maven-publish")
+    alias(libs.plugins.vanniktech.publish)
 }
 
 android {
@@ -27,12 +27,6 @@ android {
     buildFeatures {
         compose = true
     }
-
-    publishing {
-        singleVariant("release") {
-            withSourcesJar()
-        }
-    }
 }
 
 dependencies {
@@ -50,18 +44,21 @@ dependencies {
     api(libs.junit4)
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("release") {
-            afterEvaluate {
-                from(components["release"])
-            }
-            artifactId = "compose-gif-recorder-android"
-            pom {
-                name.set("Compose GIF Recorder Android")
-                description.set("Android deterministic frame capture runtime for compose-gif-recorder")
-                url.set("https://github.com/hdcodedev/compose-gif-recorder")
-            }
-        }
+mavenPublishing {
+    configure(com.vanniktech.maven.publish.AndroidSingleVariantLibrary(
+        variant = "release",
+        sourcesJar = true,
+        publishJavadocJar = false
+    ))
+
+    coordinates(
+        groupId = ProjectConfig.group,
+        artifactId = "compose-gif-recorder-android",
+        version = ProjectConfig.version
+    )
+
+    pom {
+        name.set("Compose GIF Recorder Android")
+        description.set("Android deterministic frame capture runtime for compose-gif-recorder")
     }
 }
