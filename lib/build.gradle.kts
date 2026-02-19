@@ -21,8 +21,7 @@ subprojects {
         extensions.configure<com.vanniktech.maven.publish.MavenPublishBaseExtension> {
             publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.CENTRAL_PORTAL)
             val signingKey = providers.gradleProperty("signingInMemoryKey")
-                .orElse(providers.environmentVariable("ORG_GRADLE_PROJECT_signingInMemoryKey"))
-            if (signingKey.isPresent) {
+            if (signingKey.orNull != null) {
                 signAllPublications()
             }
 
