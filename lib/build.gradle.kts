@@ -6,8 +6,8 @@ plugins {
 }
 
 allprojects {
-    group = "io.github.hdcodedev"
-    version = "0.1.0-SNAPSHOT"
+    group = ProjectConfig.group
+    version = ProjectConfig.version
 
     repositories {
         google()

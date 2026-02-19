@@ -8,6 +8,25 @@ kotlin {
     jvmToolchain(17)
 }
 
+val generateVersionResource by tasks.registering {
+    val outputDir = layout.buildDirectory.dir("generated/version-resource")
+    inputs.property("version", ProjectConfig.version)
+    outputs.dir(outputDir)
+    doLast {
+        val file = outputDir.get().file("compose-gif-recorder.version").asFile
+        file.parentFile.mkdirs()
+        file.writeText(ProjectConfig.version)
+    }
+}
+
+sourceSets.main {
+    resources.srcDir(layout.buildDirectory.dir("generated/version-resource"))
+}
+
+tasks.named("processResources") {
+    dependsOn(generateVersionResource)
+}
+
 gradlePlugin {
     plugins {
         create("composeGifRecorder") {

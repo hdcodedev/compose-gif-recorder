@@ -9,7 +9,7 @@ activityCompose = "1.12.4"
 kotlin = "2.0.21"
 ksp = "2.0.21-1.0.28"
 composeBom = "2024.09.00"
-composeGifRecorder = "0.1.0-SNAPSHOT"
+composeGifRecorder = "0.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
