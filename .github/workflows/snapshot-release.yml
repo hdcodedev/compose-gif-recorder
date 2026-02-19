@@ -173,7 +173,7 @@ jobs:
               'The plugin automatically adds all required dependencies (`annotations`, `core`, `android`, `ksp`).',
             ].join('\n');
 
-            github.rest.repos.createCommitComment({
+            await github.rest.repos.createCommitComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               commit_sha: context.sha,
