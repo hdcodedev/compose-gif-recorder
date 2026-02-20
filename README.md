@@ -4,9 +4,6 @@
   <a href="https://central.sonatype.com/artifact/io.github.hdcodedev/compose-gif-recorder-gradle-plugin">
     <img src="https://img.shields.io/maven-central/v/io.github.hdcodedev/compose-gif-recorder-gradle-plugin?label=Release&color=2E7D32" />
   </a>
-  <a href="https://central.sonatype.com/repository/maven-snapshots/io/github/hdcodedev/compose-gif-recorder-annotations/maven-metadata.xml">
-    <img src="https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fio%2Fgithub%2Fhdcodedev%2Fcompose-gif-recorder-annotations%2Fmaven-metadata.xml&label=Snapshot&color=4285F4" />
-  </a>
   <img src="https://img.shields.io/badge/Jetpack_Compose-1.10.3-4285F4?logo=jetpackcompose" />
   <img src="https://img.shields.io/badge/Kotlin-2.3.10-0095D5?logo=kotlin" />
   <img src="https://img.shields.io/badge/AGP-9.0.1-2E7D32?logo=android" />
