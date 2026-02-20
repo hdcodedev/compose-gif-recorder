@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.dokka)
     `maven-publish`
     signing
     alias(libs.plugins.vanniktech.publish)

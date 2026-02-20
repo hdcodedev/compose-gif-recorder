@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.dokka)
     `maven-publish`
     signing
     alias(libs.plugins.vanniktech.publish)
@@ -50,6 +51,19 @@ dependencies {
     androidTestImplementation(libs.compose.foundation)
     androidTestImplementation(libs.androidx.test.ext.junit)
     debugImplementation(libs.compose.ui.test.manifest)
+}
+
+dokka {
+    dokkaSourceSets.maybeCreate("main").apply {
+        sourceRoots.from(file("src/main/kotlin"))
+        sourceRoots.from(file("src/main/java"))
+        classpath.from(provider { configurations.getByName("releaseCompileClasspath") })
+        analysisPlatform.set(org.jetbrains.dokka.gradle.engine.parameters.KotlinPlatform.AndroidJVM)
+        documentedVisibilities.set(
+            setOf(org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier.Public),
+        )
+        jdkVersion.set(17)
+    }
 }
 
 mavenPublishing {

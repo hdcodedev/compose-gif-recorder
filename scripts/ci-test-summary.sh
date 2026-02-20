@@ -12,6 +12,7 @@ SUMMARY_TEMPLATE_JSON="${CI_TEST_SUMMARY_TEMPLATE_JSON:-${TEMPLATES_DIR}/ci-test
 FORCE_ZERO="${CI_TEST_SUMMARY_FORCE_ZERO:-false}"
 SKIP_STEP_SUMMARY="${CI_TEST_SUMMARY_SKIP_STEP_SUMMARY:-false}"
 GRADLE_TEST_OUTCOME="${CI_GRADLE_TEST_OUTCOME:-}"
+JOB_STATUS="${CI_JOB_STATUS:-}"
 SHOULD_RUN_TESTS="${CI_SHOULD_RUN:-true}"
 
 APP_RESULT_DIRS=(
@@ -117,7 +118,14 @@ gradle_step_broken() {
       printf '1\n'
       ;;
     *)
-      printf '0\n'
+      case "$JOB_STATUS" in
+        failure|cancelled)
+          printf '1\n'
+          ;;
+        *)
+          printf '0\n'
+          ;;
+      esac
       ;;
   esac
 }
