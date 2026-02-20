@@ -36,7 +36,7 @@ class ScenarioParserTest {
     fun parsesScenarioFpsForMatchingScenario() {
         val file = File.createTempFile("generated", ".kt")
         file.writeText(
-                """
+            """
             object GeneratedGifScenarioRegistry {
               private val scenarios = listOf(
                 GifScenarioSpec(name = "line_chart_demo", capture = GifCaptureConfig(durationMs = 3000, fps = 50)),
