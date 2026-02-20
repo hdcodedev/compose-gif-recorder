@@ -24,11 +24,18 @@ import kotlin.math.max
 private const val DEFAULT_REGISTRY_CLASS = "io.github.hdcodedev.composegif.generated.GeneratedGifScenarioRegistry"
 private const val DEFAULT_OUTPUT_SUBDIR = "gif-recorder"
 
+/**
+ * Instrumentation entry point that renders one generated scenario and writes its PNG frames to device storage.
+ *
+ * This test is invoked by the Gradle plugin via `am instrument`.
+ */
 @RunWith(AndroidJUnit4::class)
 public class GifFrameCaptureTest {
+    /** Compose test rule used to render and capture scenario frames. */
     @get:Rule
     public val composeRule = createAndroidComposeRule<ComponentActivity>()
 
+    /** Captures the scenario selected via instrumentation arguments. */
     @Test
     public fun captureScenario() {
         val args = InstrumentationRegistry.getArguments()

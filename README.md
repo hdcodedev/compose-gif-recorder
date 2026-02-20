@@ -77,9 +77,9 @@ fun MyNewAnimationScenario() {
 }
 ```
 
-### 4. Optional: record interactions (friendly API)
+### 4. Record interactions
 
-Use `interactionNodeTag` plus high-level `interactions` to replay deterministic input without coordinates.
+Use `interactionNodeTag` plus high-level `interactions`.
 
 ```kotlin
 import androidx.compose.runtime.Composable
@@ -118,17 +118,93 @@ fun LineChartWithInteraction() {
 }
 ```
 
-`interactionNodeTag` must match a test tag in your composable tree.
-`interactions` are expanded to deterministic low-level gestures by the KSP generator.
-`interactionStartDelayMs` defaults to `1000` (1 second) so entry animations can settle before interactions begin.
-Set `interactionStartDelayMs = 0` if you want interactions to start immediately.
-`durationMs` is treated as a minimum. If configured interactions need more time, the recorder extends effective duration automatically.
-For swipes, prefer `speed = GifSwipeSpeed.FAST|NORMAL|SLOW` for high-level timing presets.
-Use `speed = GifSwipeSpeed.CUSTOM` with `travelFrames` / `holdStartFrames` / `releaseFrames` only when you need exact frame-level control.
+- `interactionNodeTag` must match a test tag in your composable tree.
+- `interactions` are expanded to deterministic low-level gestures by the KSP generator.
+- `framesAfter` is part of the public friendly API (`GifInteraction`) and is still supported.
+- Use `frames` for `PAUSE`; use `framesAfter` to add settle frames after `TAP`/`SWIPE`.
+- For `TAP`, when `framesAfter = 0`, the processor falls back to `frames`.
+- `interactionStartDelayMs` defaults to `1000` (1 second) so entry animations can settle before interactions begin.
+- Set `interactionStartDelayMs = 0` if you want interactions to start immediately.
+- `durationMs` is treated as a minimum. If configured interactions need more time, the recorder extends effective duration automatically.
+- For swipes, prefer `speed = GifSwipeSpeed.FAST|NORMAL|SLOW` for high-level timing presets.
+- Use `speed = GifSwipeSpeed.CUSTOM` with `travelFrames` / `holdStartFrames` / `releaseFrames` only when you need exact frame-level control.
+
+#### Interaction API combinations (complete reference)
+
+You can mix any supported enum values. The full friendly API surface is:
+
+- `GifInteractionType`: `PAUSE`, `TAP`, `SWIPE`
+- `GifInteractionTarget`: `CENTER`, `TOP`, `BOTTOM`, `LEFT`, `RIGHT`
+- `GifSwipeDirection`: `LEFT_TO_RIGHT`, `RIGHT_TO_LEFT`, `TOP_TO_BOTTOM`, `BOTTOM_TO_TOP`
+- `GifSwipeDistance`: `SHORT`, `MEDIUM`, `LONG`
+- `GifSwipeSpeed`: `FAST`, `NORMAL`, `SLOW`, `CUSTOM`
+
+Field usage by interaction type:
+
+- `PAUSE`: use `frames`
+- `TAP`: use `target`, optional `framesAfter` (or `frames` fallback when `framesAfter = 0`)
+- `SWIPE`: use `target`, `direction`, `distance`, `speed`; optional `framesAfter`
+- `SWIPE` + `CUSTOM`: also set `travelFrames`, `holdStartFrames`, `releaseFrames`
+
+```kotlin
+@RecordGif(
+    interactionNodeTag = "Chart",
+    interactions = [
+        GifInteraction(type = GifInteractionType.PAUSE, frames = 12),
+        GifInteraction(
+            type = GifInteractionType.SWIPE,
+            target = GifInteractionTarget.RIGHT,
+            direction = GifSwipeDirection.BOTTOM_TO_TOP,
+            distance = GifSwipeDistance.MEDIUM,
+            speed = GifSwipeSpeed.CUSTOM,
+            travelFrames = 10,
+            holdStartFrames = 6,
+            releaseFrames = 6,
+            framesAfter = 6,
+        ),
+    ],
+)
+```
 
 If you need exact control, `gestures` (coordinate-based) is still available as an advanced API.
 
-### 5. Run tasks
+### 5. Advance
+
+#### Gesture API combinations (complete reference)
+
+Low-level `gestures` support all three gesture types:
+
+- `GifGestureType.PAUSE`: `frames`
+- `GifGestureType.TAP`: `xFraction`, `yFraction`, `framesAfter`
+- `GifGestureType.DRAG_PATH`: `points`, `holdStartFrames`, `framesPerWaypoint`, `releaseFrames`
+
+```kotlin
+@RecordGif(
+    interactionNodeTag = "Chart",
+    gestures = [
+        GifGestureStep(type = GifGestureType.PAUSE, frames = 12),
+        GifGestureStep(
+            type = GifGestureType.TAP,
+            xFraction = 0.8f,
+            yFraction = 0.3f,
+            framesAfter = 8,
+        ),
+        GifGestureStep(
+            type = GifGestureType.DRAG_PATH,
+            points = [
+                GifFractionPoint(x = 0.2f, y = 0.5f),
+                GifFractionPoint(x = 0.5f, y = 0.2f),
+                GifFractionPoint(x = 0.8f, y = 0.5f),
+            ],
+            holdStartFrames = 6,
+            framesPerWaypoint = 12,
+            releaseFrames = 6,
+        ),
+    ],
+)
+```
+
+### 6. Run tasks
 
 List available scenarios:
 

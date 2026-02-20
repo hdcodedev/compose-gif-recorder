@@ -1,21 +1,42 @@
 package io.github.hdcodedev.composegif.core
 
+/** Available visual themes for GIF capture scenarios. */
 public enum class GifTheme {
     LIGHT,
     DARK,
 }
 
+/** Gesture primitives used during deterministic replay. */
 public enum class GifGestureType {
     PAUSE,
     TAP,
     DRAG_PATH,
 }
 
+/**
+ * A normalized point in the interaction node coordinate space.
+ *
+ * @property x Horizontal fraction in range `[0.0, 1.0]`.
+ * @property y Vertical fraction in range `[0.0, 1.0]`.
+ */
 public data class GifFractionPoint(
     val x: Float,
     val y: Float,
 )
 
+/**
+ * A low-level gesture replay step.
+ *
+ * @property type Gesture operation to perform.
+ * @property frames Pause frame count for `PAUSE`.
+ * @property xFraction Horizontal fraction for `TAP`.
+ * @property yFraction Vertical fraction for `TAP`.
+ * @property framesAfter Pause frames after a `TAP`.
+ * @property points Drag path points for `DRAG_PATH`.
+ * @property holdStartFrames Pause frames after pointer down for `DRAG_PATH`.
+ * @property framesPerWaypoint Interpolation frames between drag waypoints.
+ * @property releaseFrames Pause frames after pointer up for `DRAG_PATH`.
+ */
 public data class GifGestureStep(
     val type: GifGestureType = GifGestureType.PAUSE,
     val frames: Int = 0,
@@ -28,6 +49,17 @@ public data class GifGestureStep(
     val releaseFrames: Int = 0,
 )
 
+/**
+ * Capture configuration for a single GIF scenario.
+ *
+ * @property durationMs Target recording duration in milliseconds.
+ * @property fps Capture frame rate used for frame extraction.
+ * @property widthPx Output width in pixels before GIF encoding.
+ * @property heightPx Output height in pixels. Use `0` to auto-resolve height.
+ * @property theme Scenario theme metadata.
+ * @property interactionNodeTag Node tag used as the gesture target root.
+ * @property gestures Low-level gesture steps replayed during capture.
+ */
 public data class GifCaptureConfig(
     val durationMs: Int = 3000,
     val fps: Int = 50,
@@ -38,21 +70,39 @@ public data class GifCaptureConfig(
     val gestures: List<GifGestureStep> = emptyList(),
 )
 
+/**
+ * A named scenario and its capture configuration.
+ *
+ * @property name Scenario identifier used by generated registries and tooling.
+ * @property capture Capture configuration for this scenario.
+ */
 public data class GifScenarioSpec(
     val name: String,
     val capture: GifCaptureConfig,
 )
 
+/** Thrown when a scenario name or capture configuration fails validation. */
 public class GifValidationException(
     message: String,
 ) : IllegalArgumentException(message)
 
+/** Validation helpers for scenario specs and capture configs. */
 public object GifCaptureValidator {
+    /**
+     * Validates a complete scenario specification.
+     *
+     * @throws GifValidationException if the spec is invalid.
+     */
     public fun validate(spec: GifScenarioSpec) {
         requireName(spec.name)
         validate(spec.capture)
     }
 
+    /**
+     * Validates capture configuration constraints.
+     *
+     * @throws GifValidationException if the config is invalid.
+     */
     public fun validate(config: GifCaptureConfig) {
         if (config.durationMs <= 0) {
             throw GifValidationException("durationMs must be greater than 0.")
@@ -74,6 +124,11 @@ public object GifCaptureValidator {
         }
     }
 
+    /**
+     * Validates a scenario name.
+     *
+     * @throws GifValidationException if the name is blank or has unsupported characters.
+     */
     public fun requireName(name: String) {
         if (name.isBlank()) {
             throw GifValidationException("Scenario name cannot be blank.")

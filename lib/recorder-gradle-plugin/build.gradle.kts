@@ -11,6 +11,16 @@ kotlin {
     jvmToolchain(17)
 }
 
+dokka {
+    dokkaSourceSets.configureEach {
+        documentedVisibilities.set(
+            setOf(org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier.Public),
+        )
+        skipEmptyPackages.set(true)
+        jdkVersion.set(17)
+    }
+}
+
 val generateVersionResource by tasks.registering {
     val outputDir = layout.buildDirectory.dir("generated/version-resource")
     inputs.property("version", ProjectConfig.version)

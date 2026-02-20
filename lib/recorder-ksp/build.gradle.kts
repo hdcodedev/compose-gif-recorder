@@ -10,6 +10,16 @@ kotlin {
     jvmToolchain(17)
 }
 
+dokka {
+    dokkaSourceSets.configureEach {
+        documentedVisibilities.set(
+            setOf(org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier.Public),
+        )
+        skipEmptyPackages.set(true)
+        jdkVersion.set(17)
+    }
+}
+
 dependencies {
     implementation(project(":recorder-annotations"))
     implementation(project(":recorder-core"))

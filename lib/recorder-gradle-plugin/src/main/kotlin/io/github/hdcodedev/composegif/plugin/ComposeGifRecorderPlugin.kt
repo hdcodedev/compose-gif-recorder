@@ -36,6 +36,23 @@ private val DEFAULT_LIBRARY_VERSION: String by lazy {
 }
 private const val DEFAULT_REMOTE_SUBDIR = "gif-recorder"
 
+/**
+ * Configuration DSL for the Compose GIF Recorder Gradle plugin.
+ *
+ * @property applicationId Android application ID used for instrumentation and device pull paths.
+ * @property outputDir Directory where generated GIFs are written.
+ * @property adbSerial Device serial, or `auto` to pick a single connected device.
+ * @property adbBin `adb` executable path or command name.
+ * @property ffmpegBin `ffmpeg` executable path or command name.
+ * @property ffprobeBin `ffprobe` executable path or command name.
+ * @property gifsicleBin `gifsicle` executable path or command name.
+ * @property scenario Scenario name to capture, or `all`.
+ * @property registryClass Generated registry class name used by instrumentation.
+ * @property testClass Instrumentation test class used for frame capture.
+ * @property libraryVersion Recorder library version injected into app dependencies.
+ * @property gifWidth Output GIF width in pixels.
+ * @property gifHeight Output GIF height in pixels. Use `0` for auto height.
+ */
 public abstract class GifRecorderExtension
     @Inject
     constructor(
@@ -56,6 +73,7 @@ public abstract class GifRecorderExtension
         public val gifHeight: Property<Int> = objects.property(Int::class.java)
     }
 
+/** Gradle plugin that wires recorder dependencies and capture tasks into Android app projects. */
 public class ComposeGifRecorderPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         val extension = project.extensions.create("gifRecorder", GifRecorderExtension::class.java)
@@ -146,7 +164,7 @@ private fun RecordGifTask.configureFromExtension(
     generatedRegistryFile.convention(project.layout.buildDirectory.file(GENERATED_REGISTRY_FILE))
 }
 
-public abstract class ListGifScenariosTask : DefaultTask() {
+internal abstract class ListGifScenariosTask : DefaultTask() {
     @get:Internal
     public abstract val generatedRegistryFile: RegularFileProperty
 
@@ -168,7 +186,7 @@ public abstract class ListGifScenariosTask : DefaultTask() {
     }
 }
 
-public abstract class RecordGifTask : DefaultTask() {
+internal abstract class RecordGifTask : DefaultTask() {
     init {
         outputs.upToDateWhen { false }
     }

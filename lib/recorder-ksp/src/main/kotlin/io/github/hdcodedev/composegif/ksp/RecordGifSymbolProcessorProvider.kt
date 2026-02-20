@@ -29,6 +29,7 @@ private const val GENERATED_OBJECT_NAME = "GeneratedGifScenarioRegistry"
 private const val DEFAULT_DURATION_MS = 3000
 private val VALID_SCENARIO_NAME_REGEX = Regex("[a-zA-Z0-9_\\-]+")
 
+/** KSP provider that registers the `@RecordGif` symbol processor. */
 public class RecordGifSymbolProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor =
         RecordGifSymbolProcessor(

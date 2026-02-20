@@ -10,6 +10,16 @@ kotlin {
     jvmToolchain(17)
 }
 
+dokka {
+    dokkaSourceSets.configureEach {
+        documentedVisibilities.set(
+            setOf(org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier.Public),
+        )
+        skipEmptyPackages.set(true)
+        jdkVersion.set(17)
+    }
+}
+
 mavenPublishing {
     coordinates(
         groupId = ProjectConfig.group,
