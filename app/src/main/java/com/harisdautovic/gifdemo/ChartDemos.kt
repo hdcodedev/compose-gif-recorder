@@ -31,7 +31,7 @@ fun ChartDemoScreen(modifier: Modifier = Modifier) {
     val demos = listOf(
         ChartDemo(
             title = "Bar Chart",
-            subtitle = "Monthly revenue overview",
+            subtitle = "Daily net cash flow overview",
             content = { BarChartDemo() },
         ),
         ChartDemo(
