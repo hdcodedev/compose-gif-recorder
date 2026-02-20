@@ -36,11 +36,11 @@ class ScenarioParserTest {
     fun parsesScenarioFpsForMatchingScenario() {
         val file = File.createTempFile("generated", ".kt")
         file.writeText(
-            """
+                """
             object GeneratedGifScenarioRegistry {
               private val scenarios = listOf(
-                GifScenarioSpec(name = "line_chart_demo", capture = GifCaptureConfig(durationMs = 1800, fps = 50)),
-                GifScenarioSpec(name = "bar_chart_demo", capture = GifCaptureConfig(durationMs = 1800, fps = 24))
+                GifScenarioSpec(name = "line_chart_demo", capture = GifCaptureConfig(durationMs = 3000, fps = 50)),
+                GifScenarioSpec(name = "bar_chart_demo", capture = GifCaptureConfig(durationMs = 3000, fps = 24))
               )
             }
             """.trimIndent(),
@@ -57,7 +57,7 @@ class ScenarioParserTest {
             """
             object GeneratedGifScenarioRegistry {
               private val scenarios = listOf(
-                GifScenarioSpec(name = "line_chart_demo", capture = GifCaptureConfig(durationMs = 1800, fps = 50))
+                GifScenarioSpec(name = "line_chart_demo", capture = GifCaptureConfig(durationMs = 3000, fps = 50))
               )
             }
             """.trimIndent(),
@@ -80,7 +80,7 @@ class ScenarioParserTest {
             """
             object GeneratedGifScenarioRegistry {
               private val scenarios = listOf(
-                GifScenarioSpec(name = "line-chart-demo", capture = GifCaptureConfig(durationMs = 1800, fps = 33))
+                GifScenarioSpec(name = "line-chart-demo", capture = GifCaptureConfig(durationMs = 3000, fps = 33))
               )
             }
             """.trimIndent(),
@@ -97,7 +97,7 @@ class ScenarioParserTest {
             """
             object GeneratedGifScenarioRegistry {
               private val scenarios = listOf(
-                GifScenarioSpec(name = "scenario_a", capture = GifCaptureConfig(durationMs = 1800)),
+                GifScenarioSpec(name = "scenario_a", capture = GifCaptureConfig(durationMs = 3000)),
                 GifScenarioSpec(name = "scenario_b", capture = GifCaptureConfig(fps = 24))
               )
             }

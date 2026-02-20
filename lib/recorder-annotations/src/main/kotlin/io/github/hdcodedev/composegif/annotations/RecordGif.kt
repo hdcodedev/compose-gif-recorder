@@ -4,7 +4,7 @@ package io.github.hdcodedev.composegif.annotations
 @Retention(AnnotationRetention.BINARY)
 public annotation class RecordGif(
     val name: String = "",
-    val durationMs: Int = 1800,
+    val durationMs: Int = 3000,
     val fps: Int = 50,
     val widthPx: Int = 540,
     val heightPx: Int = 0,

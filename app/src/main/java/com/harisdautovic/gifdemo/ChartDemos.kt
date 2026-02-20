@@ -118,8 +118,8 @@ private fun DemoCard(demo: ChartDemo) {
     }
 }
 
+@RecordGif
 @Composable
-@RecordGif(name = "bar_chart_demo", durationMs = 2500)
 fun BarChartDemo() {
     val dataSet = listOf(45f, -12f, 38f, 27f, -19f, 42f, 31f).toChartDataSet(
         title = "Daily Net Cash Flow",
@@ -128,9 +128,7 @@ fun BarChartDemo() {
     BarChart(dataSet = dataSet)
 }
 
-@Composable
 @RecordGif(
-    name = "line_chart_demo",
     durationMs = 2500,
     interactionNodeTag = "LineChartPlot",
     interactions = [
@@ -151,6 +149,7 @@ fun BarChartDemo() {
         ),
     ],
 )
+@Composable
 fun LineChartDemo() {
     val dataSet = listOf(5f, 12f, 8f, 20f, 15f, 25f, 18f, 30f).toChartDataSet(
         title = "Temperature (°C)",
@@ -160,8 +159,8 @@ fun LineChartDemo() {
     LineChart(dataSet = dataSet)
 }
 
+@RecordGif
 @Composable
-@RecordGif(name = "pie_chart_demo", durationMs = 2500)
 fun PieChartDemo() {
     val dataSet = listOf(30f, 25f, 20f, 15f, 10f).toChartDataSet(
         title = "Market Share",
@@ -171,8 +170,8 @@ fun PieChartDemo() {
     PieChart(dataSet = dataSet)
 }
 
+@RecordGif
 @Composable
-@RecordGif(name = "multi_line_chart_demo", durationMs = 2500)
 fun MultiLineChartDemo() {
     val items = listOf(
         "Web Store" to listOf(420f, 510f, 480f, 530f, 560f, 590f),

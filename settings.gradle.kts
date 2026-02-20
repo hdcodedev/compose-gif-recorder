@@ -10,6 +10,13 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == "io.github.hdcodedev.compose-gif-recorder") {
+                useModule("io.github.hdcodedev:compose-gif-recorder-gradle-plugin:${requested.version}")
+            }
+        }
+    }
 }
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
@@ -24,6 +31,8 @@ dependencyResolutionManagement {
 
 includeBuild("lib") {
     dependencySubstitution {
+        substitute(module("io.github.hdcodedev:compose-gif-recorder-gradle-plugin"))
+            .using(project(":recorder-gradle-plugin"))
         substitute(module("io.github.hdcodedev:compose-gif-recorder-annotations"))
             .using(project(":recorder-annotations"))
         substitute(module("io.github.hdcodedev:compose-gif-recorder-core"))

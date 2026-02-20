@@ -8,8 +8,11 @@ import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.io.IOException
@@ -166,6 +169,10 @@ public abstract class ListGifScenariosTask : DefaultTask() {
 }
 
 public abstract class RecordGifTask : DefaultTask() {
+    init {
+        outputs.upToDateWhen { false }
+    }
+
     @get:Input
     public abstract val applicationId: Property<String>
 
@@ -205,7 +212,8 @@ public abstract class RecordGifTask : DefaultTask() {
     @get:Input
     public abstract val allScenarios: Property<Boolean>
 
-    @get:Internal
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.RELATIVE)
     public abstract val generatedRegistryFile: RegularFileProperty
 
     @TaskAction

@@ -34,7 +34,7 @@ class GifCaptureValidatorTest {
     @Test
     fun acceptsValidConfig() {
         GifCaptureValidator.validate(
-            GifCaptureConfig(durationMs = 1800, fps = 50, widthPx = 540, heightPx = 0, theme = GifTheme.DARK),
+            GifCaptureConfig(durationMs = 3000, fps = 50, widthPx = 540, heightPx = 0, theme = GifTheme.DARK),
         )
     }
 

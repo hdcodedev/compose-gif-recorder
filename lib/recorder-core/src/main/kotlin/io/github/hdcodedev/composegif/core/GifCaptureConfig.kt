@@ -29,7 +29,7 @@ public data class GifGestureStep(
 )
 
 public data class GifCaptureConfig(
-    val durationMs: Int = 1800,
+    val durationMs: Int = 3000,
     val fps: Int = 50,
     val widthPx: Int = 540,
     val heightPx: Int = 0,
