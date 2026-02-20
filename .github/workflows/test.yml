@@ -55,6 +55,7 @@ jobs:
         if: always()
         env:
           CI_GRADLE_TEST_OUTCOME: ${{ steps.gradle_tests.outcome }}
+          CI_JOB_STATUS: ${{ job.status }}
           CI_SHOULD_RUN: ${{ steps.changes.outputs.should_run }}
         run: bash scripts/ci-test-summary.sh
       - name: Ensure summary files exist
@@ -64,6 +65,7 @@ jobs:
             CI_TEST_SUMMARY_FORCE_ZERO=true \
             CI_TEST_SUMMARY_SKIP_STEP_SUMMARY=true \
             CI_GRADLE_TEST_OUTCOME="${{ steps.gradle_tests.outcome }}" \
+            CI_JOB_STATUS="${{ job.status }}" \
             CI_SHOULD_RUN="${{ steps.changes.outputs.should_run }}" \
             bash scripts/ci-test-summary.sh
           fi
