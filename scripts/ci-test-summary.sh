@@ -119,7 +119,7 @@ gradle_step_broken() {
       ;;
     *)
       case "$JOB_STATUS" in
-        failure|cancelled|timed_out|action_required)
+        failure|cancelled)
           printf '1\n'
           ;;
         *)
