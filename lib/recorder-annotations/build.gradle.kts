@@ -13,14 +13,14 @@ mavenPublishing {
     coordinates(
         groupId = ProjectConfig.group,
         artifactId = "compose-gif-recorder-annotations",
-        version = ProjectConfig.version
+        version = ProjectConfig.version,
     )
 
     pom {
         ProjectPublishing.configurePom(
             pom = this,
             moduleName = "Compose GIF Recorder Annotations",
-            moduleDescription = "Annotation API for compose-gif-recorder"
+            moduleDescription = "Annotation API for compose-gif-recorder",
         )
     }
 }

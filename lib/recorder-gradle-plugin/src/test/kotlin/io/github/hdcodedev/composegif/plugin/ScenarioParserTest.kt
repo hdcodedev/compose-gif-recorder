@@ -25,4 +25,68 @@ class ScenarioParserTest {
 
         file.delete()
     }
+
+    @Test
+    fun returnsEmptyNamesWhenRegistryMissing() {
+        val file = File("build/tmp/does-not-exist-generated-registry.kt")
+        assertEquals(emptyList(), parseScenarioNames(file))
+    }
+
+    @Test
+    fun parsesScenarioFpsForMatchingScenario() {
+        val file = File.createTempFile("generated", ".kt")
+        file.writeText(
+            """
+            object GeneratedGifScenarioRegistry {
+              private val scenarios = listOf(
+                GifScenarioSpec(name = "line_chart_demo", capture = GifCaptureConfig(durationMs = 1800, fps = 50)),
+                GifScenarioSpec(name = "bar_chart_demo", capture = GifCaptureConfig(durationMs = 1800, fps = 24))
+              )
+            }
+            """.trimIndent(),
+        )
+
+        assertEquals(24, parseScenarioFps(file, "bar_chart_demo"))
+        file.delete()
+    }
+
+    @Test
+    fun returnsNullFpsWhenScenarioMissing() {
+        val file = File.createTempFile("generated", ".kt")
+        file.writeText(
+            """
+            object GeneratedGifScenarioRegistry {
+              private val scenarios = listOf(
+                GifScenarioSpec(name = "line_chart_demo", capture = GifCaptureConfig(durationMs = 1800, fps = 50))
+              )
+            }
+            """.trimIndent(),
+        )
+
+        assertEquals(null, parseScenarioFps(file, "missing_scenario"))
+        file.delete()
+    }
+
+    @Test
+    fun returnsNullFpsWhenRegistryMissing() {
+        val file = File("build/tmp/does-not-exist-generated-registry.kt")
+        assertEquals(null, parseScenarioFps(file, "any"))
+    }
+
+    @Test
+    fun parsesScenarioFpsForHyphenatedName() {
+        val file = File.createTempFile("generated", ".kt")
+        file.writeText(
+            """
+            object GeneratedGifScenarioRegistry {
+              private val scenarios = listOf(
+                GifScenarioSpec(name = "line-chart-demo", capture = GifCaptureConfig(durationMs = 1800, fps = 33))
+              )
+            }
+            """.trimIndent(),
+        )
+
+        assertEquals(33, parseScenarioFps(file, "line-chart-demo"))
+        file.delete()
+    }
 }

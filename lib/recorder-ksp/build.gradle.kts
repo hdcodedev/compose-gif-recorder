@@ -24,14 +24,14 @@ mavenPublishing {
     coordinates(
         groupId = ProjectConfig.group,
         artifactId = "compose-gif-recorder-ksp",
-        version = ProjectConfig.version
+        version = ProjectConfig.version,
     )
 
     pom {
         ProjectPublishing.configurePom(
             pom = this,
             moduleName = "Compose GIF Recorder KSP",
-            moduleDescription = "KSP processor for compose-gif-recorder"
+            moduleDescription = "KSP processor for compose-gif-recorder",
         )
     }
 }

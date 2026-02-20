@@ -53,22 +53,28 @@ dependencies {
 }
 
 mavenPublishing {
-    configure(com.vanniktech.maven.publish.GradlePlugin(
-        javadocJar = com.vanniktech.maven.publish.JavadocJar.Empty(),
-        sourcesJar = com.vanniktech.maven.publish.SourcesJar.Sources()
-    ))
+    configure(
+        com.vanniktech.maven.publish.GradlePlugin(
+            javadocJar =
+                com.vanniktech.maven.publish.JavadocJar
+                    .Empty(),
+            sourcesJar =
+                com.vanniktech.maven.publish.SourcesJar
+                    .Sources(),
+        ),
+    )
 
     coordinates(
         groupId = ProjectConfig.group,
         artifactId = "compose-gif-recorder-gradle-plugin",
-        version = ProjectConfig.version
+        version = ProjectConfig.version,
     )
 
     pom {
         ProjectPublishing.configurePom(
             pom = this,
             moduleName = "Compose GIF Recorder Gradle Plugin",
-            moduleDescription = "Gradle plugin for compose-gif-recorder"
+            moduleDescription = "Gradle plugin for compose-gif-recorder",
         )
     }
 }

@@ -76,7 +76,53 @@ fun MyNewAnimationScenario() {
 }
 ```
 
-### 4. Run tasks
+### 4. Optional: record interactions (friendly API)
+
+Use `interactionNodeTag` plus high-level `interactions` to replay deterministic input without coordinates.
+
+```kotlin
+import androidx.compose.runtime.Composable
+import io.github.hdcodedev.composegif.annotations.GifInteraction
+import io.github.hdcodedev.composegif.annotations.GifInteractionTarget
+import io.github.hdcodedev.composegif.annotations.GifInteractionType
+import io.github.hdcodedev.composegif.annotations.GifSwipeDirection
+import io.github.hdcodedev.composegif.annotations.GifSwipeDistance
+import io.github.hdcodedev.composegif.annotations.RecordGif
+
+@Composable
+@RecordGif(
+    name = "line_chart_with_interaction",
+    durationMs = 2600,
+    interactionNodeTag = "LineChartPlot",
+    interactions = [
+        GifInteraction(type = GifInteractionType.PAUSE, frames = 24),
+        GifInteraction(
+            type = GifInteractionType.SWIPE,
+            target = GifInteractionTarget.CENTER,
+            direction = GifSwipeDirection.LEFT_TO_RIGHT,
+            distance = GifSwipeDistance.MEDIUM,
+            travelFrames = 8,
+            holdStartFrames = 8,
+            releaseFrames = 8,
+        ),
+        GifInteraction(
+            type = GifInteractionType.TAP,
+            target = GifInteractionTarget.RIGHT,
+            framesAfter = 10,
+        ),
+    ],
+)
+fun LineChartWithInteraction() {
+    // UI content
+}
+```
+
+`interactionNodeTag` must match a test tag in your composable tree.
+`interactions` are expanded to deterministic low-level gestures by the KSP generator.
+
+If you need exact control, `gestures` (coordinate-based) is still available as an advanced API.
+
+### 5. Run tasks
 
 List available scenarios:
 

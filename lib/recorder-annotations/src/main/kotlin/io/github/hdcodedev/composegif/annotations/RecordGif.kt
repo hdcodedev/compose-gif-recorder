@@ -9,9 +9,74 @@ public annotation class RecordGif(
     val widthPx: Int = 540,
     val heightPx: Int = 0,
     val theme: GifTheme = GifTheme.DARK,
+    val interactionNodeTag: String = "",
+    val interactions: Array<GifInteraction> = [],
+    val gestures: Array<GifGestureStep> = [],
 )
 
 public enum class GifTheme {
     LIGHT,
     DARK,
 }
+
+public enum class GifGestureType {
+    PAUSE,
+    TAP,
+    DRAG_PATH,
+}
+
+public enum class GifInteractionType {
+    PAUSE,
+    TAP,
+    SWIPE,
+}
+
+public enum class GifInteractionTarget {
+    CENTER,
+    TOP,
+    BOTTOM,
+    LEFT,
+    RIGHT,
+}
+
+public enum class GifSwipeDirection {
+    LEFT_TO_RIGHT,
+    RIGHT_TO_LEFT,
+    TOP_TO_BOTTOM,
+    BOTTOM_TO_TOP,
+}
+
+public enum class GifSwipeDistance {
+    SHORT,
+    MEDIUM,
+    LONG,
+}
+
+public annotation class GifInteraction(
+    val type: GifInteractionType = GifInteractionType.PAUSE,
+    val frames: Int = 0,
+    val framesAfter: Int = 0,
+    val target: GifInteractionTarget = GifInteractionTarget.CENTER,
+    val direction: GifSwipeDirection = GifSwipeDirection.LEFT_TO_RIGHT,
+    val distance: GifSwipeDistance = GifSwipeDistance.MEDIUM,
+    val travelFrames: Int = 8,
+    val holdStartFrames: Int = 0,
+    val releaseFrames: Int = 0,
+)
+
+public annotation class GifFractionPoint(
+    val x: Float,
+    val y: Float,
+)
+
+public annotation class GifGestureStep(
+    val type: GifGestureType = GifGestureType.PAUSE,
+    val frames: Int = 0,
+    val xFraction: Float = 0.5f,
+    val yFraction: Float = 0.5f,
+    val framesAfter: Int = 0,
+    val points: Array<GifFractionPoint> = [],
+    val holdStartFrames: Int = 0,
+    val framesPerWaypoint: Int = 0,
+    val releaseFrames: Int = 0,
+)

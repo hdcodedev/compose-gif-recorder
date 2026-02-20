@@ -16,7 +16,9 @@ import java.io.IOException
 import javax.inject.Inject
 import kotlin.math.max
 
-private const val GENERATED_REGISTRY_FILE = "generated/ksp/debug/kotlin/io/github/hdcodedev/composegif/generated/GeneratedGifScenarioRegistry.kt"
+private const val GENERATED_REGISTRY_FILE =
+    "generated/ksp/debug/kotlin/" +
+        "io/github/hdcodedev/composegif/generated/GeneratedGifScenarioRegistry.kt"
 private const val GENERATED_REGISTRY_CLASS = "io.github.hdcodedev.composegif.generated.GeneratedGifScenarioRegistry"
 private const val DEFAULT_TEST_CLASS = "io.github.hdcodedev.composegif.android.GifFrameCaptureTest"
 private const val DEFAULT_COMPOSE_UI_VERSION = "1.10.3"
@@ -33,7 +35,9 @@ private const val DEFAULT_REMOTE_SUBDIR = "gif-recorder"
 
 public abstract class GifRecorderExtension
     @Inject
-    constructor(objects: ObjectFactory) {
+    constructor(
+        objects: ObjectFactory,
+    ) {
         public val applicationId: Property<String> = objects.property(String::class.java)
         public val outputDir: DirectoryProperty = objects.directoryProperty()
         public val adbSerial: Property<String> = objects.property(String::class.java)
@@ -99,15 +103,24 @@ public class ComposeGifRecorderPlugin : Plugin<Project> {
         }
     }
 
-    private fun configureDependencies(project: Project, extension: GifRecorderExtension) {
+    private fun configureDependencies(
+        project: Project,
+        extension: GifRecorderExtension,
+    ) {
         val version = extension.libraryVersion.getOrElse(DEFAULT_LIBRARY_VERSION)
 
         project.dependencies.add("implementation", "io.github.hdcodedev:compose-gif-recorder-annotations:$version")
         project.dependencies.add("implementation", "io.github.hdcodedev:compose-gif-recorder-core:$version")
         project.dependencies.add("implementation", "io.github.hdcodedev:compose-gif-recorder-android:$version")
         project.dependencies.add("ksp", "io.github.hdcodedev:compose-gif-recorder-ksp:$version")
-        project.dependencies.add("androidTestImplementation", "io.github.hdcodedev:compose-gif-recorder-android:$version")
-        project.dependencies.add("debugImplementation", "androidx.compose.ui:ui-test-manifest:$DEFAULT_COMPOSE_UI_VERSION")
+        project.dependencies.add(
+            "androidTestImplementation",
+            "io.github.hdcodedev:compose-gif-recorder-android:$version",
+        )
+        project.dependencies.add(
+            "debugImplementation",
+            "androidx.compose.ui:ui-test-manifest:$DEFAULT_COMPOSE_UI_VERSION",
+        )
     }
 }
 
@@ -258,27 +271,37 @@ public abstract class RecordGifTask : DefaultTask() {
                     ),
             )
 
-            val localScenarioDir = File(temporaryDir, "frames/$scenarioName").apply {
-                deleteRecursively()
-                mkdirs()
-            }
+            val localScenarioDir =
+                File(temporaryDir, "frames/$scenarioName").apply {
+                    deleteRecursively()
+                    mkdirs()
+                }
 
-            val remoteScenarioDir = "/sdcard/Android/data/${applicationId.get()}/files/$DEFAULT_REMOTE_SUBDIR/$scenarioName"
+            val remoteScenarioDir =
+                "/sdcard/Android/data/${applicationId.get()}/files/$DEFAULT_REMOTE_SUBDIR/$scenarioName"
             runChecked(adbPrefix + listOf("pull", "$remoteScenarioDir/.", localScenarioDir.absolutePath))
 
-            val frames = localScenarioDir.listFiles { file -> file.name.matches(Regex("frame-\\d{4}\\.png")) }?.sortedBy { it.name }
-                ?: emptyList()
+            val frames =
+                localScenarioDir
+                    .listFiles { file ->
+                        file.name.matches(Regex("frame-\\d{4}\\.png"))
+                    }?.sortedBy { it.name }
+                    ?: emptyList()
             if (frames.isEmpty()) {
                 throw IllegalStateException("No frames found for scenario '$scenarioName'.")
             }
 
             val effectiveHeight = resolveCanvasHeight(frames)
-            val normalizedDir = File(temporaryDir, "normalized/$scenarioName").apply {
-                deleteRecursively()
-                mkdirs()
-            }
+            val normalizedDir =
+                File(temporaryDir, "normalized/$scenarioName").apply {
+                    deleteRecursively()
+                    mkdirs()
+                }
 
             val fps = resolveFpsFromRegistry(registrySource, scenarioName)
+            val scaleFilter =
+                "scale=${gifWidth.get()}:$effectiveHeight:flags=lanczos:force_original_aspect_ratio=decrease," +
+                    "pad=${gifWidth.get()}:$effectiveHeight:(ow-iw)/2:(oh-ih)/2:color=black,format=rgb24"
             runChecked(
                 listOf(
                     ffmpegBin.get(),
@@ -291,7 +314,7 @@ public abstract class RecordGifTask : DefaultTask() {
                     "-i",
                     "${localScenarioDir.absolutePath}/frame-%04d.png",
                     "-vf",
-                    "scale=${gifWidth.get()}:$effectiveHeight:flags=lanczos:force_original_aspect_ratio=decrease,pad=${gifWidth.get()}:$effectiveHeight:(ow-iw)/2:(oh-ih)/2:color=black,format=rgb24",
+                    scaleFilter,
                     "${normalizedDir.absolutePath}/frame-%04d.png",
                 ),
             )
@@ -414,11 +437,7 @@ public abstract class RecordGifTask : DefaultTask() {
     private fun resolveFpsFromRegistry(
         registryFile: File,
         scenarioName: String,
-    ): Int {
-        val text = registryFile.readText()
-        val regex = Regex("name\\s*=\\s*\"$scenarioName\".*?fps\\s*=\\s*(\\d+)", setOf(RegexOption.DOT_MATCHES_ALL))
-        return regex.find(text)?.groupValues?.get(1)?.toIntOrNull() ?: 50
-    }
+    ): Int = parseScenarioFps(registryFile, scenarioName) ?: 50
 
     private fun resolveAdbBinary(): String {
         val configured = adbBin.get().trim()
@@ -445,8 +464,7 @@ public abstract class RecordGifTask : DefaultTask() {
                 addSdkCandidate(System.getenv("ANDROID_HOME"), executableName)
                 addSdkCandidate("$userHome/Library/Android/sdk", executableName)
                 addSdkCandidate("$userHome/Android/Sdk", executableName)
-            }
-                .distinct()
+            }.distinct()
 
         val matched = candidates.firstOrNull { File(it).exists() }
         if (matched != null) return matched
@@ -480,8 +498,7 @@ public abstract class RecordGifTask : DefaultTask() {
         add(File(sdkRoot, "platform-tools/$executableName").absolutePath)
     }
 
-    private fun isWindows(): Boolean =
-        System.getProperty("os.name").contains("win", ignoreCase = true)
+    private fun isWindows(): Boolean = System.getProperty("os.name").contains("win", ignoreCase = true)
 
     private fun ensureBinaryExists(binary: String) {
         val resolved =
@@ -500,7 +517,10 @@ public abstract class RecordGifTask : DefaultTask() {
             try {
                 ProcessBuilder(command).directory(project.projectDir).redirectErrorStream(true).start()
             } catch (error: IOException) {
-                throw IllegalStateException("Failed to start command (${command.joinToString(" ")}): ${error.message}", error)
+                throw IllegalStateException(
+                    "Failed to start command (${command.joinToString(" ")}): ${error.message}",
+                    error,
+                )
             }
         val output = process.inputStream.bufferedReader().readText()
         val exit = process.waitFor()
@@ -515,5 +535,24 @@ internal fun parseScenarioNames(generatedRegistry: File): List<String> {
     if (!generatedRegistry.exists()) return emptyList()
     val text = generatedRegistry.readText()
     val regex = Regex("name\\s*=\\s*\"([^\"]+)\"")
-    return regex.findAll(text).map { it.groupValues[1] }.distinct().toList()
+    return regex
+        .findAll(text)
+        .map { it.groupValues[1] }
+        .distinct()
+        .toList()
+}
+
+internal fun parseScenarioFps(
+    generatedRegistry: File,
+    scenarioName: String,
+): Int? {
+    if (!generatedRegistry.exists()) return null
+    val text = generatedRegistry.readText()
+    val escapedName = Regex.escape(scenarioName)
+    val regex = Regex("name\\s*=\\s*\"$escapedName\".*?fps\\s*=\\s*(\\d+)", setOf(RegexOption.DOT_MATCHES_ALL))
+    return regex
+        .find(text)
+        ?.groupValues
+        ?.get(1)
+        ?.toIntOrNull()
 }

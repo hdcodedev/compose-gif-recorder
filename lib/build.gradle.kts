@@ -4,6 +4,16 @@ plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.vanniktech.publish) apply false
+    alias(libs.plugins.ktlint) apply false
+}
+
+subprojects {
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
+
+    extensions.configure<org.jlleitschuh.gradle.ktlint.KtlintExtension>("ktlint") {
+        android.set(true)
+        ignoreFailures.set(false)
+    }
 }
 
 allprojects {
@@ -23,6 +33,20 @@ val publishableModules = listOf(
     ":recorder-android",
     ":recorder-gradle-plugin"
 )
+
+val testableJvmModules = listOf(
+    ":recorder-annotations",
+    ":recorder-core",
+    ":recorder-ksp",
+    ":recorder-gradle-plugin",
+)
+
+tasks.register("recorderTest") {
+    group = "verification"
+    description = "Runs JVM/unit tests for all recorder modules"
+    dependsOn(testableJvmModules.map { "$it:test" })
+    dependsOn(":recorder-android:testDebugUnitTest")
+}
 
 tasks.register("publishRecorderModules") {
     group = "publishing"
