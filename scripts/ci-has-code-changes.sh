@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-CODE_PATH_PATTERN='^(app/|lib/|demo-app/|gradle/|build\.gradle\.kts$|settings\.gradle\.kts$|gradle\.properties$|gradlew$|gradlew\.bat$|\.editorconfig$|\.github/workflows/)'
+CODE_PATH_PATTERN='^(app/|lib/|demo-app/|gradle/|scripts/|build\.gradle\.kts$|settings\.gradle\.kts$|gradle\.properties$|gradlew$|gradlew\.bat$|\.editorconfig$|\.github/workflows/)'
 
 is_code_change() {
   local changed_files="$1"
