@@ -149,6 +149,7 @@ internal object InteractionGestureExpander {
     private fun speedToTiming(speed: String): SwipeTiming =
         when (speed) {
             "FAST" -> SwipeTiming(travelFrames = 6, holdStartFrames = 2, releaseFrames = 2)
+            "NORMAL" -> SwipeTiming(travelFrames = 8, holdStartFrames = 6, releaseFrames = 6)
             "SLOW" -> SwipeTiming(travelFrames = 12, holdStartFrames = 10, releaseFrames = 10)
             else -> error("Unhandled swipe speed preset: $speed")
         }
