@@ -48,9 +48,9 @@ jobs:
         if: steps.changes.outputs.should_run == 'true'
         run: |
           set -euo pipefail
-          ./gradlew appTest --info
+          ./gradlew appTest
           cd lib
-          ./gradlew recorderTest --info
+          ./gradlew recorderTest
       - name: Test summary
         if: always()
         env:
