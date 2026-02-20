@@ -152,7 +152,7 @@ internal object InteractionGestureExpander {
         when (speed) {
             GifSwipeSpeed.FAST -> SwipeTiming(travelFrames = 24, holdStartFrames = 10, releaseFrames = 10)
             GifSwipeSpeed.NORMAL -> SwipeTiming(travelFrames = 36, holdStartFrames = 24, releaseFrames = 24)
-            GifSwipeSpeed.SLOW -> SwipeTiming(travelFrames = 56, holdStartFrames = 44, releaseFrames = 44)
+            GifSwipeSpeed.SLOW -> SwipeTiming(travelFrames = 112, holdStartFrames = 88, releaseFrames = 88)
             GifSwipeSpeed.CUSTOM -> error("CUSTOM should be handled before speed mapping")
         }
 }

@@ -19,7 +19,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.harisdautovic.gifdemo.ui.theme.DemoTheme
-import io.github.dautovicharis.charts.BarChart
 import io.github.dautovicharis.charts.LineChart
 import io.github.dautovicharis.charts.PieChart
 import io.github.dautovicharis.charts.model.toChartDataSet
@@ -37,23 +36,13 @@ fun ChartDemoScreen(modifier: Modifier = Modifier) {
     val demos =
         listOf(
             ChartDemo(
-                title = "Bar Chart",
-                subtitle = "Daily net cash flow overview",
-                content = { BarChartDemo() },
-            ),
-            ChartDemo(
-                title = "Line Chart",
-                subtitle = "Weekly temperature trend",
-                content = { LineChartDemo() },
-            ),
-            ChartDemo(
                 title = "Pie Chart",
-                subtitle = "Market share by category",
+                subtitle = "Default @RecordGif settings",
                 content = { PieChartDemo() },
             ),
             ChartDemo(
                 title = "Multi Line Chart",
-                subtitle = "Compare multiple data series",
+                subtitle = "Swipe interaction recording",
                 content = { MultiLineChartDemo() },
             ),
         )
@@ -124,42 +113,6 @@ private fun DemoCard(demo: ChartDemo) {
 
 @RecordGif
 @Composable
-fun BarChartDemo() {
-    val dataSet =
-        listOf(45f, -12f, 38f, 27f, -19f, 42f, 31f).toChartDataSet(
-            title = "Daily Net Cash Flow",
-            labels = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"),
-        )
-    BarChart(dataSet = dataSet)
-}
-
-@RecordGif(
-    durationMs = 2500,
-    interactionNodeTag = "LineChartPlot",
-    interactions = [
-        GifInteraction(type = GifInteractionType.PAUSE, frames = 20),
-        GifInteraction(
-            type = GifInteractionType.SWIPE,
-            target = GifInteractionTarget.CENTER,
-            direction = GifSwipeDirection.LEFT_TO_RIGHT,
-            distance = GifSwipeDistance.MEDIUM,
-            speed = GifSwipeSpeed.SLOW,
-        ),
-    ],
-)
-@Composable
-fun LineChartDemo() {
-    val dataSet =
-        listOf(5f, 12f, 8f, 20f, 15f, 25f, 18f, 30f).toChartDataSet(
-            title = "Temperature (°C)",
-            postfix = "°",
-            labels = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "Mon+"),
-        )
-    LineChart(dataSet = dataSet)
-}
-
-@RecordGif
-@Composable
 fun PieChartDemo() {
     val dataSet =
         listOf(30f, 25f, 20f, 15f, 10f).toChartDataSet(
@@ -170,20 +123,66 @@ fun PieChartDemo() {
     PieChart(dataSet = dataSet)
 }
 
-@RecordGif
+@RecordGif(
+    name = "multi_line_custom_gesture",
+    durationMs = 3200,
+    interactionNodeTag = "LineChartPlot",
+    interactions = [
+        GifInteraction(
+            type = GifInteractionType.SWIPE,
+            target = GifInteractionTarget.CENTER,
+            direction = GifSwipeDirection.LEFT_TO_RIGHT,
+            distance = GifSwipeDistance.LONG,
+            speed = GifSwipeSpeed.NORMAL,
+            framesAfter = 12,
+        ),
+    ],
+)
 @Composable
 fun MultiLineChartDemo() {
     val items =
         listOf(
-            "Web Store" to listOf(420f, 510f, 480f, 530f, 560f, 590f),
-            "Mobile App" to listOf(360f, 420f, 410f, 460f, 500f, 540f),
-            "Partner Sales" to listOf(280f, 320f, 340f, 360f, 390f, 420f),
+            "Web Store" to
+                listOf(
+                    420f,
+                    510f,
+                    480f,
+                    530f,
+                    560f,
+                    590f,
+                ),
+            "Mobile App" to
+                listOf(
+                    360f,
+                    420f,
+                    410f,
+                    460f,
+                    500f,
+                    540f,
+                ),
+            "Partner Sales" to
+                listOf(
+                    280f,
+                    320f,
+                    340f,
+                    360f,
+                    390f,
+                    420f,
+                ),
         )
     val dataSet =
         items.toMultiChartDataSet(
             title = "Weekly Revenue by Channel",
             prefix = "$",
-            categories = listOf("Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6"),
+            categories =
+                listOf(
+                    "Week 1",
+                    "Week 2",
+                    "Week 3",
+                    "Week 4",
+                    "Week 5",
+                    "Week 6",
+                ),
         )
     LineChart(dataSet = dataSet)
 }

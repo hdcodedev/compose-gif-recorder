@@ -101,9 +101,9 @@ class InteractionGestureExpanderTest {
             )
 
         val drag = gestures.single()
-        assertEquals(44, drag.holdStartFrames)
-        assertEquals(56, drag.framesPerWaypoint)
-        assertEquals(44, drag.releaseFrames)
+        assertEquals(88, drag.holdStartFrames)
+        assertEquals(112, drag.framesPerWaypoint)
+        assertEquals(88, drag.releaseFrames)
     }
 
     @Test

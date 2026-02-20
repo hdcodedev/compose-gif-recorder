@@ -9,7 +9,6 @@ activityCompose = "1.12.4"
 kotlin = "2.3.10"
 ksp = "2.3.4"
 composeBom = "2026.02.00"
-composeGifRecorder = "0.1.0"
 charts = "2.2.0"
 ktlint = "14.0.1"
 vanniktechPublish = "0.36.0"
@@ -58,7 +57,7 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-compose-gif-recorder = { id = "io.github.hdcodedev.compose-gif-recorder", version.ref = "composeGifRecorder" }
+compose-gif-recorder = { id = "io.github.hdcodedev.compose-gif-recorder" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 gradle-plugin-publish = { id = "java-gradle-plugin" }
 maven-publish = { id = "maven-publish" }
