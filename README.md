@@ -88,6 +88,7 @@ import io.github.hdcodedev.composegif.annotations.GifInteractionTarget
 import io.github.hdcodedev.composegif.annotations.GifInteractionType
 import io.github.hdcodedev.composegif.annotations.GifSwipeDirection
 import io.github.hdcodedev.composegif.annotations.GifSwipeDistance
+import io.github.hdcodedev.composegif.annotations.GifSwipeSpeed
 import io.github.hdcodedev.composegif.annotations.RecordGif
 
 @RecordGif(
@@ -101,9 +102,7 @@ import io.github.hdcodedev.composegif.annotations.RecordGif
             target = GifInteractionTarget.CENTER,
             direction = GifSwipeDirection.LEFT_TO_RIGHT,
             distance = GifSwipeDistance.MEDIUM,
-            travelFrames = 8,
-            holdStartFrames = 8,
-            releaseFrames = 8,
+            speed = GifSwipeSpeed.NORMAL,
         ),
         GifInteraction(
             type = GifInteractionType.TAP,
@@ -120,6 +119,8 @@ fun LineChartWithInteraction() {
 
 `interactionNodeTag` must match a test tag in your composable tree.
 `interactions` are expanded to deterministic low-level gestures by the KSP generator.
+For swipes, prefer `speed = GifSwipeSpeed.FAST|NORMAL|SLOW` for high-level timing presets.
+Use `speed = GifSwipeSpeed.CUSTOM` with `travelFrames` / `holdStartFrames` / `releaseFrames` only when you need exact frame-level control.
 
 If you need exact control, `gestures` (coordinate-based) is still available as an advanced API.
 

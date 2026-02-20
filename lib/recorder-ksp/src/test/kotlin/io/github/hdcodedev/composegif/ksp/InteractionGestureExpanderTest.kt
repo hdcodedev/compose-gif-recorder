@@ -5,6 +5,7 @@ import io.github.hdcodedev.composegif.annotations.GifInteractionTarget
 import io.github.hdcodedev.composegif.annotations.GifInteractionType
 import io.github.hdcodedev.composegif.annotations.GifSwipeDirection
 import io.github.hdcodedev.composegif.annotations.GifSwipeDistance
+import io.github.hdcodedev.composegif.annotations.GifSwipeSpeed
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -71,6 +72,76 @@ class InteractionGestureExpanderTest {
         assertEquals(0.30f, drag.points[0].y)
         assertEquals(GifGestureType.PAUSE.name, gestures[1].type)
         assertEquals(5, gestures[1].frames)
+    }
+
+    @Test
+    fun mapsSwipeInteractionSpeedPresetToTimingFrames() {
+        val gestures =
+            InteractionGestureExpander.expand(
+                InteractionSpec(
+                    type = GifInteractionType.SWIPE.name,
+                    speed = GifSwipeSpeed.NORMAL.name,
+                ),
+            )
+
+        val drag = gestures.single()
+        assertEquals(6, drag.holdStartFrames)
+        assertEquals(8, drag.framesPerWaypoint)
+        assertEquals(6, drag.releaseFrames)
+    }
+
+    @Test
+    fun mapsSlowSwipeSpeedPresetToTimingFrames() {
+        val gestures =
+            InteractionGestureExpander.expand(
+                InteractionSpec(
+                    type = GifInteractionType.SWIPE.name,
+                    speed = GifSwipeSpeed.SLOW.name,
+                ),
+            )
+
+        val drag = gestures.single()
+        assertEquals(10, drag.holdStartFrames)
+        assertEquals(12, drag.framesPerWaypoint)
+        assertEquals(10, drag.releaseFrames)
+    }
+
+    @Test
+    fun customSwipeSpeedUsesManualTimingFields() {
+        val gestures =
+            InteractionGestureExpander.expand(
+                InteractionSpec(
+                    type = GifInteractionType.SWIPE.name,
+                    speed = GifSwipeSpeed.CUSTOM.name,
+                    holdStartFrames = 3,
+                    travelFrames = 11,
+                    releaseFrames = 4,
+                ),
+            )
+
+        val drag = gestures.single()
+        assertEquals(3, drag.holdStartFrames)
+        assertEquals(11, drag.framesPerWaypoint)
+        assertEquals(4, drag.releaseFrames)
+    }
+
+    @Test
+    fun speedPresetOverridesManualTimingFields() {
+        val gestures =
+            InteractionGestureExpander.expand(
+                InteractionSpec(
+                    type = GifInteractionType.SWIPE.name,
+                    speed = GifSwipeSpeed.FAST.name,
+                    holdStartFrames = 99,
+                    travelFrames = 99,
+                    releaseFrames = 99,
+                ),
+            )
+
+        val drag = gestures.single()
+        assertEquals(2, drag.holdStartFrames)
+        assertEquals(6, drag.framesPerWaypoint)
+        assertEquals(2, drag.releaseFrames)
     }
 
     @Test

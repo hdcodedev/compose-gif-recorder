@@ -278,6 +278,7 @@ private class RecordGifSymbolProcessor(
                         target = interactionArgs.valueAsEnumName("target") ?: "CENTER",
                         direction = interactionArgs.valueAsEnumName("direction") ?: "LEFT_TO_RIGHT",
                         distance = interactionArgs.valueAsEnumName("distance") ?: "MEDIUM",
+                        speed = interactionArgs.valueAsEnumName("speed") ?: "CUSTOM",
                         travelFrames = interactionArgs.valueAsInt("travelFrames") ?: 8,
                         holdStartFrames = interactionArgs.valueAsInt("holdStartFrames") ?: 0,
                         releaseFrames = interactionArgs.valueAsInt("releaseFrames") ?: 0,

@@ -29,6 +29,7 @@ import io.github.hdcodedev.composegif.annotations.GifInteractionTarget
 import io.github.hdcodedev.composegif.annotations.GifInteractionType
 import io.github.hdcodedev.composegif.annotations.GifSwipeDirection
 import io.github.hdcodedev.composegif.annotations.GifSwipeDistance
+import io.github.hdcodedev.composegif.annotations.GifSwipeSpeed
 import io.github.hdcodedev.composegif.annotations.RecordGif
 
 @Composable
@@ -138,9 +139,7 @@ fun BarChartDemo() {
             target = GifInteractionTarget.CENTER,
             direction = GifSwipeDirection.LEFT_TO_RIGHT,
             distance = GifSwipeDistance.MEDIUM,
-            holdStartFrames = 6,
-            travelFrames = 8,
-            releaseFrames = 6,
+            speed = GifSwipeSpeed.NORMAL,
         ),
         GifInteraction(
             type = GifInteractionType.TAP,

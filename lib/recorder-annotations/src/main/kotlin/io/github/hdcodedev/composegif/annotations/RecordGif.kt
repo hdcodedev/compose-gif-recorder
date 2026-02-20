@@ -52,6 +52,13 @@ public enum class GifSwipeDistance {
     LONG,
 }
 
+public enum class GifSwipeSpeed {
+    CUSTOM,
+    FAST,
+    NORMAL,
+    SLOW,
+}
+
 public annotation class GifInteraction(
     val type: GifInteractionType = GifInteractionType.PAUSE,
     val frames: Int = 0,
@@ -69,6 +76,12 @@ public annotation class GifInteraction(
     val target: GifInteractionTarget = GifInteractionTarget.CENTER,
     val direction: GifSwipeDirection = GifSwipeDirection.LEFT_TO_RIGHT,
     val distance: GifSwipeDistance = GifSwipeDistance.MEDIUM,
+    /**
+     * High-level swipe timing preset.
+     *
+     * Use `CUSTOM` to control timing with `travelFrames`, `holdStartFrames`, and `releaseFrames`.
+     */
+    val speed: GifSwipeSpeed = GifSwipeSpeed.CUSTOM,
     val travelFrames: Int = 8,
     val holdStartFrames: Int = 0,
     val releaseFrames: Int = 0,

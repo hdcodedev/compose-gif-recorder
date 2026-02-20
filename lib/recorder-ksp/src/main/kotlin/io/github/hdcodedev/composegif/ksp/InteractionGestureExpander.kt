@@ -7,6 +7,7 @@ internal data class InteractionSpec(
     val target: String = "CENTER",
     val direction: String = "LEFT_TO_RIGHT",
     val distance: String = "MEDIUM",
+    val speed: String = "CUSTOM",
     val travelFrames: Int = 8,
     val holdStartFrames: Int = 0,
     val releaseFrames: Int = 0,
@@ -53,14 +54,15 @@ internal object InteractionGestureExpander {
             "SWIPE" -> {
                 val swipePoints =
                     swipePoints(target = spec.target, direction = spec.direction, distance = spec.distance)
+                val timing = swipeTiming(spec)
                 buildList {
                     add(
                         GestureSpec(
                             type = "DRAG_PATH",
                             points = swipePoints,
-                            holdStartFrames = spec.holdStartFrames,
-                            framesPerWaypoint = spec.travelFrames,
-                            releaseFrames = spec.releaseFrames,
+                            holdStartFrames = timing.holdStartFrames,
+                            framesPerWaypoint = timing.travelFrames,
+                            releaseFrames = timing.releaseFrames,
                         ),
                     )
                     if (spec.framesAfter > 0) {
@@ -132,4 +134,28 @@ internal object InteractionGestureExpander {
                 )
         }
     }
+
+    private fun swipeTiming(spec: InteractionSpec): SwipeTiming =
+        if (spec.speed == "CUSTOM") {
+            SwipeTiming(
+                travelFrames = spec.travelFrames,
+                holdStartFrames = spec.holdStartFrames,
+                releaseFrames = spec.releaseFrames,
+            )
+        } else {
+            speedToTiming(spec.speed)
+        }
+
+    private fun speedToTiming(speed: String): SwipeTiming =
+        when (speed) {
+            "FAST" -> SwipeTiming(travelFrames = 6, holdStartFrames = 2, releaseFrames = 2)
+            "SLOW" -> SwipeTiming(travelFrames = 12, holdStartFrames = 10, releaseFrames = 10)
+            else -> SwipeTiming(travelFrames = 8, holdStartFrames = 6, releaseFrames = 6)
+        }
 }
+
+private data class SwipeTiming(
+    val travelFrames: Int,
+    val holdStartFrames: Int,
+    val releaseFrames: Int,
+)
