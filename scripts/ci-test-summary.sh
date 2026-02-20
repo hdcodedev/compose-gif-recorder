@@ -106,32 +106,6 @@ collect_suite_counts() {
   collect_counts_for_dirs "$@"
 }
 
-line_text() {
-  local label="$1" tests="$2" failures="$3" errors="$4" skipped="${5:-0}"
-  local broken=$((failures + errors))
-  local icon="✅"
-  local word text
-
-  word="$(test_word "$tests")"
-  text="${tests} ${word} completed"
-
-  if ((tests == 0)); then
-    icon="⚪"
-    text="0 ${word} completed"
-  elif ((broken > 0)); then
-    icon="❌"
-    if ((skipped > 0)); then
-      text="${tests} ${word} completed (${broken} failed, ${skipped} skipped)"
-    else
-      text="${tests} ${word} completed (${broken} failed)"
-    fi
-  elif ((skipped > 0)); then
-    text="${tests} ${word} completed (${skipped} skipped)"
-  fi
-
-  printf -- '- %s %s: %s' "$icon" "$label" "$text"
-}
-
 gradle_step_broken() {
   if [[ "$FORCE_ZERO" == "true" || "$SHOULD_RUN_TESTS" != "true" ]]; then
     printf '0\n'
