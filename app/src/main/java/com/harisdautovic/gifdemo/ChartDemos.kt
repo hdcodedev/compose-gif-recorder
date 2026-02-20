@@ -34,34 +34,36 @@ import io.github.hdcodedev.composegif.annotations.RecordGif
 
 @Composable
 fun ChartDemoScreen(modifier: Modifier = Modifier) {
-    val demos = listOf(
-        ChartDemo(
-            title = "Bar Chart",
-            subtitle = "Daily net cash flow overview",
-            content = { BarChartDemo() },
-        ),
-        ChartDemo(
-            title = "Line Chart",
-            subtitle = "Weekly temperature trend",
-            content = { LineChartDemo() },
-        ),
-        ChartDemo(
-            title = "Pie Chart",
-            subtitle = "Market share by category",
-            content = { PieChartDemo() },
-        ),
-        ChartDemo(
-            title = "Multi Line Chart",
-            subtitle = "Compare multiple data series",
-            content = { MultiLineChartDemo() },
-        ),
-    )
+    val demos =
+        listOf(
+            ChartDemo(
+                title = "Bar Chart",
+                subtitle = "Daily net cash flow overview",
+                content = { BarChartDemo() },
+            ),
+            ChartDemo(
+                title = "Line Chart",
+                subtitle = "Weekly temperature trend",
+                content = { LineChartDemo() },
+            ),
+            ChartDemo(
+                title = "Pie Chart",
+                subtitle = "Market share by category",
+                content = { PieChartDemo() },
+            ),
+            ChartDemo(
+                title = "Multi Line Chart",
+                subtitle = "Compare multiple data series",
+                content = { MultiLineChartDemo() },
+            ),
+        )
 
     Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
             contentPadding = PaddingValues(20.dp),
             verticalArrangement = Arrangement.spacedBy(18.dp),
         ) {
@@ -99,9 +101,10 @@ private fun DemoCard(demo: ChartDemo) {
         shape = RoundedCornerShape(20.dp),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
@@ -122,10 +125,11 @@ private fun DemoCard(demo: ChartDemo) {
 @RecordGif
 @Composable
 fun BarChartDemo() {
-    val dataSet = listOf(45f, -12f, 38f, 27f, -19f, 42f, 31f).toChartDataSet(
-        title = "Daily Net Cash Flow",
-        labels = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"),
-    )
+    val dataSet =
+        listOf(45f, -12f, 38f, 27f, -19f, 42f, 31f).toChartDataSet(
+            title = "Daily Net Cash Flow",
+            labels = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"),
+        )
     BarChart(dataSet = dataSet)
 }
 
@@ -145,38 +149,42 @@ fun BarChartDemo() {
 )
 @Composable
 fun LineChartDemo() {
-    val dataSet = listOf(5f, 12f, 8f, 20f, 15f, 25f, 18f, 30f).toChartDataSet(
-        title = "Temperature (°C)",
-        postfix = "°",
-        labels = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "Mon+"),
-    )
+    val dataSet =
+        listOf(5f, 12f, 8f, 20f, 15f, 25f, 18f, 30f).toChartDataSet(
+            title = "Temperature (°C)",
+            postfix = "°",
+            labels = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "Mon+"),
+        )
     LineChart(dataSet = dataSet)
 }
 
 @RecordGif
 @Composable
 fun PieChartDemo() {
-    val dataSet = listOf(30f, 25f, 20f, 15f, 10f).toChartDataSet(
-        title = "Market Share",
-        postfix = "%",
-        labels = listOf("Android", "iOS", "Web", "Desktop", "Other"),
-    )
+    val dataSet =
+        listOf(30f, 25f, 20f, 15f, 10f).toChartDataSet(
+            title = "Market Share",
+            postfix = "%",
+            labels = listOf("Android", "iOS", "Web", "Desktop", "Other"),
+        )
     PieChart(dataSet = dataSet)
 }
 
 @RecordGif
 @Composable
 fun MultiLineChartDemo() {
-    val items = listOf(
-        "Web Store" to listOf(420f, 510f, 480f, 530f, 560f, 590f),
-        "Mobile App" to listOf(360f, 420f, 410f, 460f, 500f, 540f),
-        "Partner Sales" to listOf(280f, 320f, 340f, 360f, 390f, 420f),
-    )
-    val dataSet = items.toMultiChartDataSet(
-        title = "Weekly Revenue by Channel",
-        prefix = "$",
-        categories = listOf("Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6"),
-    )
+    val items =
+        listOf(
+            "Web Store" to listOf(420f, 510f, 480f, 530f, 560f, 590f),
+            "Mobile App" to listOf(360f, 420f, 410f, 460f, 500f, 540f),
+            "Partner Sales" to listOf(280f, 320f, 340f, 360f, 390f, 420f),
+        )
+    val dataSet =
+        items.toMultiChartDataSet(
+            title = "Weekly Revenue by Channel",
+            prefix = "$",
+            categories = listOf("Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6"),
+        )
     LineChart(dataSet = dataSet)
 }
 

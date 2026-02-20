@@ -4,10 +4,10 @@
   <a href="https://central.sonatype.com/artifact/io.github.hdcodedev/compose-gif-recorder-gradle-plugin">
     <img src="https://img.shields.io/maven-central/v/io.github.hdcodedev/compose-gif-recorder-gradle-plugin?label=Release&color=2E7D32" />
   </a>
-  <img src="https://img.shields.io/badge/Jetpack_Compose-1.10.3-4285F4?logo=jetpackcompose" />
+  <img src="https://img.shields.io/badge/Jetpack_Compose_BOM-2026.02.00-4285F4?logo=jetpackcompose" />
   <img src="https://img.shields.io/badge/Kotlin-2.3.10-0095D5?logo=kotlin" />
   <img src="https://img.shields.io/badge/AGP-9.0.1-2E7D32?logo=android" />
-  <img src="https://img.shields.io/badge/KSP-2.3.0-FF6F00" />
+  <img src="https://img.shields.io/badge/KSP-2.3.4-FF6F00" />
 </p>
 
 <p align="center">
