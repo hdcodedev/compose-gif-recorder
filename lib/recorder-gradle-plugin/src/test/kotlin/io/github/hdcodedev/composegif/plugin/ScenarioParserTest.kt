@@ -89,4 +89,23 @@ class ScenarioParserTest {
         assertEquals(33, parseScenarioFps(file, "line-chart-demo"))
         file.delete()
     }
+
+    @Test
+    fun doesNotCrossScenarioBoundariesWhenParsingFps() {
+        val file = File.createTempFile("generated", ".kt")
+        file.writeText(
+            """
+            object GeneratedGifScenarioRegistry {
+              private val scenarios = listOf(
+                GifScenarioSpec(name = "scenario_a", capture = GifCaptureConfig(durationMs = 1800)),
+                GifScenarioSpec(name = "scenario_b", capture = GifCaptureConfig(fps = 24))
+              )
+            }
+            """.trimIndent(),
+        )
+
+        assertEquals(null, parseScenarioFps(file, "scenario_a"))
+        assertEquals(24, parseScenarioFps(file, "scenario_b"))
+        file.delete()
+    }
 }
