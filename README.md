@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  Deterministic GIF recording for Jetpack Compose using a Gradle plugin
+  Deterministic GIF recording for Jetpack Compose.
 </p>
 
 ## Motivation
