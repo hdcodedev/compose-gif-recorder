@@ -3,8 +3,10 @@ package io.github.hdcodedev.composegif.android
 import android.graphics.Bitmap
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -49,12 +51,42 @@ public class GifFrameCaptureTest {
         }
         composeRule.waitForIdle()
 
-        var index = 1
-        repeat(frameCount) {
-            composeRule.mainClock.advanceTimeBy(frameStepMs)
-            composeRule.waitForIdle()
-            saveFrame(index = index, outputDir = outputDir)
-            index += 1
+        val captureNode = composeRule.onRoot(useUnmergedTree = true)
+        var nextFrameIndex = 1
+        if (scenario.capture.gestures.isNotEmpty()) {
+            val interactionNodeTag = scenario.capture.interactionNodeTag
+            check(interactionNodeTag.isNotBlank()) {
+                "interactionNodeTag must be provided when gestures are configured."
+            }
+            val interactionNode = requireNodeWithTag(interactionNodeTag)
+            nextFrameIndex =
+                runGifGestureSteps(
+                    interactionNode = interactionNode,
+                    steps = scenario.capture.gestures,
+                    totalFrames = frameCount,
+                    startIndex = nextFrameIndex,
+                    waitForIdle = { composeRule.waitForIdle() },
+                    captureFrames = { frameCountToCapture, currentIndex ->
+                        captureFrames(
+                            captureNode = captureNode,
+                            outputDir = outputDir,
+                            startIndex = currentIndex,
+                            frameCount = frameCountToCapture,
+                            frameStepMs = frameStepMs,
+                        )
+                    },
+                )
+        }
+
+        val remainingFrames = gifFramesRemaining(totalFrames = frameCount, nextFrameIndex = nextFrameIndex)
+        if (remainingFrames > 0) {
+            captureFrames(
+                captureNode = captureNode,
+                outputDir = outputDir,
+                startIndex = nextFrameIndex,
+                frameCount = remainingFrames,
+                frameStepMs = frameStepMs,
+            )
         }
 
         writeMetadata(
@@ -101,8 +133,40 @@ public class GifFrameCaptureTest {
         return outputDir
     }
 
-    private fun saveFrame(index: Int, outputDir: File) {
-        val image = composeRule.onRoot(useUnmergedTree = true).captureToImage()
+    private fun requireNodeWithTag(tag: String): SemanticsNodeInteraction {
+        val node = composeRule.onNodeWithTag(tag, useUnmergedTree = true)
+        node.fetchSemanticsNode()
+        return node
+    }
+
+    private fun captureFrames(
+        captureNode: SemanticsNodeInteraction,
+        outputDir: File,
+        startIndex: Int,
+        frameCount: Int,
+        frameStepMs: Long,
+    ): Int {
+        var frameIndex = startIndex
+        if (frameCount <= 0) return frameIndex
+        repeat(frameCount) {
+            composeRule.mainClock.advanceTimeBy(frameStepMs)
+            composeRule.waitForIdle()
+            saveFrame(
+                captureNode = captureNode,
+                index = frameIndex,
+                outputDir = outputDir,
+            )
+            frameIndex += 1
+        }
+        return frameIndex
+    }
+
+    private fun saveFrame(
+        captureNode: SemanticsNodeInteraction,
+        index: Int,
+        outputDir: File,
+    ) {
+        val image = captureNode.captureToImage()
         val bitmap = image.asAndroidBitmap()
         val frameFile = File(outputDir, String.format(Locale.US, "frame-%04d.png", index))
         FileOutputStream(frameFile).use { stream ->
@@ -126,6 +190,8 @@ public class GifFrameCaptureTest {
             width_px=${scenario.capture.widthPx}
             height_px=${scenario.capture.heightPx}
             theme=${scenario.capture.theme}
+            interaction_node_tag=${scenario.capture.interactionNodeTag}
+            gesture_count=${scenario.capture.gestures.size}
             frame_step_ms=$frameStepMs
             total_frames=$frameCount
             """.trimIndent()

@@ -35,6 +35,7 @@ dependencies {
     api(project(":recorder-core"))
 
     implementation(libs.compose.runtime)
+    implementation(libs.compose.foundation)
     implementation(libs.compose.ui)
     implementation(libs.activity.compose)
 
@@ -44,26 +45,37 @@ dependencies {
     api(libs.androidx.test.runner)
     api(libs.androidx.test.rules)
     api(libs.junit4)
+
+    androidTestImplementation(libs.compose.ui.test.junit4)
+    androidTestImplementation(libs.compose.foundation)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    debugImplementation(libs.compose.ui.test.manifest)
 }
 
 mavenPublishing {
-    configure(com.vanniktech.maven.publish.AndroidSingleVariantLibrary(
-        javadocJar = com.vanniktech.maven.publish.JavadocJar.None(),
-        sourcesJar = com.vanniktech.maven.publish.SourcesJar.Sources(),
-        variant = "release",
-    ))
+    configure(
+        com.vanniktech.maven.publish.AndroidSingleVariantLibrary(
+            javadocJar =
+                com.vanniktech.maven.publish.JavadocJar
+                    .None(),
+            sourcesJar =
+                com.vanniktech.maven.publish.SourcesJar
+                    .Sources(),
+            variant = "release",
+        ),
+    )
 
     coordinates(
         groupId = ProjectConfig.group,
         artifactId = "compose-gif-recorder-android",
-        version = ProjectConfig.version
+        version = ProjectConfig.version,
     )
 
     pom {
         ProjectPublishing.configurePom(
             pom = this,
             moduleName = "Compose GIF Recorder Android",
-            moduleDescription = "Android deterministic frame capture runtime for compose-gif-recorder"
+            moduleDescription = "Android deterministic frame capture runtime for compose-gif-recorder",
         )
     }
 }

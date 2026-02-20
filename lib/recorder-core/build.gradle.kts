@@ -20,14 +20,14 @@ mavenPublishing {
     coordinates(
         groupId = ProjectConfig.group,
         artifactId = "compose-gif-recorder-core",
-        version = ProjectConfig.version
+        version = ProjectConfig.version,
     )
 
     pom {
         ProjectPublishing.configurePom(
             pom = this,
             moduleName = "Compose GIF Recorder Core",
-            moduleDescription = "Core models and contracts for compose-gif-recorder"
+            moduleDescription = "Core models and contracts for compose-gif-recorder",
         )
     }
 }

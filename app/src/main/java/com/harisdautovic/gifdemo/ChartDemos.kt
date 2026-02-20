@@ -24,6 +24,11 @@ import io.github.dautovicharis.charts.LineChart
 import io.github.dautovicharis.charts.PieChart
 import io.github.dautovicharis.charts.model.toChartDataSet
 import io.github.dautovicharis.charts.model.toMultiChartDataSet
+import io.github.hdcodedev.composegif.annotations.GifInteraction
+import io.github.hdcodedev.composegif.annotations.GifInteractionTarget
+import io.github.hdcodedev.composegif.annotations.GifInteractionType
+import io.github.hdcodedev.composegif.annotations.GifSwipeDirection
+import io.github.hdcodedev.composegif.annotations.GifSwipeDistance
 import io.github.hdcodedev.composegif.annotations.RecordGif
 
 @Composable
@@ -124,7 +129,28 @@ fun BarChartDemo() {
 }
 
 @Composable
-@RecordGif(name = "line_chart_demo", durationMs = 2500)
+@RecordGif(
+    name = "line_chart_demo",
+    durationMs = 2500,
+    interactionNodeTag = "LineChartPlot",
+    interactions = [
+        GifInteraction(type = GifInteractionType.PAUSE, frames = 20),
+        GifInteraction(
+            type = GifInteractionType.SWIPE,
+            target = GifInteractionTarget.CENTER,
+            direction = GifSwipeDirection.LEFT_TO_RIGHT,
+            distance = GifSwipeDistance.MEDIUM,
+            holdStartFrames = 6,
+            travelFrames = 8,
+            releaseFrames = 6,
+        ),
+        GifInteraction(
+            type = GifInteractionType.TAP,
+            target = GifInteractionTarget.RIGHT,
+            framesAfter = 10,
+        ),
+    ],
+)
 fun LineChartDemo() {
     val dataSet = listOf(5f, 12f, 8f, 20f, 15f, 25f, 18f, 30f).toChartDataSet(
         title = "Temperature (°C)",

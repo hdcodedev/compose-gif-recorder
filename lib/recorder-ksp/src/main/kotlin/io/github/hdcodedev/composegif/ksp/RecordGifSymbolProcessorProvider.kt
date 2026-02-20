@@ -2,11 +2,12 @@ package io.github.hdcodedev.composegif.ksp
 
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.KSPLogger
+import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
-import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSAnnotated
+import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSValueArgument
 import com.google.devtools.ksp.validate
@@ -26,12 +27,11 @@ private const val GENERATED_PACKAGE = "io.github.hdcodedev.composegif.generated"
 private const val GENERATED_OBJECT_NAME = "GeneratedGifScenarioRegistry"
 
 public class RecordGifSymbolProcessorProvider : SymbolProcessorProvider {
-    override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
-        return RecordGifSymbolProcessor(
+    override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor =
+        RecordGifSymbolProcessor(
             codeGenerator = environment.codeGenerator,
             logger = environment.logger,
         )
-    }
 }
 
 private class RecordGifSymbolProcessor(
@@ -83,7 +83,8 @@ private class RecordGifSymbolProcessor(
             }
 
             val args = function.extractArguments()
-            val scenarioName = args.name.takeIf { it.isNotBlank() } ?: ScenarioNaming.defaultName(function.simpleName.asString())
+            val scenarioName =
+                args.name.takeIf { it.isNotBlank() } ?: ScenarioNaming.defaultName(function.simpleName.asString())
             if (!duplicateCheck.add(scenarioName)) {
                 logger.error("Duplicate @RecordGif scenario name '$scenarioName'.", function)
                 hasErrors = true
@@ -99,6 +100,8 @@ private class RecordGifSymbolProcessor(
                     widthPx = args.widthPx,
                     heightPx = args.heightPx,
                     theme = args.theme,
+                    interactionNodeTag = args.interactionNodeTag,
+                    gestures = args.gestures,
                 )
         }
 
@@ -114,61 +117,84 @@ private class RecordGifSymbolProcessor(
         val scenarioSpec = ClassName("io.github.hdcodedev.composegif.core", "GifScenarioSpec")
         val captureConfig = ClassName("io.github.hdcodedev.composegif.core", "GifCaptureConfig")
         val coreTheme = ClassName("io.github.hdcodedev.composegif.core", "GifTheme")
+        val coreGestureType = ClassName("io.github.hdcodedev.composegif.core", "GifGestureType")
+        val coreGestureStep = ClassName("io.github.hdcodedev.composegif.core", "GifGestureStep")
+        val coreFractionPoint = ClassName("io.github.hdcodedev.composegif.core", "GifFractionPoint")
         val scenarioRegistry = ClassName("io.github.hdcodedev.composegif.core", "GifScenarioRegistry")
         val validator = ClassName("io.github.hdcodedev.composegif.core", "GifCaptureValidator")
 
         val scenariosProperty =
-            PropertySpec.builder("scenarios", List::class.asClassName().parameterizedBy(scenarioSpec), KModifier.PRIVATE)
-                .initializer(
-                    CodeBlock.builder().apply {
-                        add("listOf(\n")
-                        entries.forEachIndexed { index, entry ->
-                            add(
-                                "  %T(name = %S, capture = %T(durationMs = %L, fps = %L, widthPx = %L, heightPx = %L, theme = %T.%L))",
-                                scenarioSpec,
-                                entry.name,
-                                captureConfig,
-                                entry.durationMs,
-                                entry.fps,
-                                entry.widthPx,
-                                entry.heightPx,
-                                coreTheme,
-                                entry.theme,
-                            )
-                            if (index != entries.lastIndex) {
-                                add(",\n")
-                            } else {
-                                add("\n")
+            PropertySpec
+                .builder(
+                    "scenarios",
+                    List::class.asClassName().parameterizedBy(scenarioSpec),
+                    KModifier.PRIVATE,
+                ).initializer(
+                    CodeBlock
+                        .builder()
+                        .apply {
+                            add("listOf(\n")
+                            entries.forEachIndexed { index, entry ->
+                                val gesturesCode =
+                                    buildGestureListCode(
+                                        gestures = entry.gestures,
+                                        gestureStepClass = coreGestureStep,
+                                        gestureTypeClass = coreGestureType,
+                                        fractionPointClass = coreFractionPoint,
+                                    )
+                                add(
+                                    "  %T(name = %S, capture = %T(durationMs = %L, fps = %L, widthPx = %L, heightPx = %L, theme = %T.%L, interactionNodeTag = %S, gestures = %L))",
+                                    scenarioSpec,
+                                    entry.name,
+                                    captureConfig,
+                                    entry.durationMs,
+                                    entry.fps,
+                                    entry.widthPx,
+                                    entry.heightPx,
+                                    coreTheme,
+                                    entry.theme,
+                                    entry.interactionNodeTag,
+                                    gesturesCode,
+                                )
+                                if (index != entries.lastIndex) {
+                                    add(",\n")
+                                } else {
+                                    add("\n")
+                                }
                             }
-                        }
-                        add(")")
-                    }.build(),
-                )
-                .build()
+                            add(")")
+                        }.build(),
+                ).build()
 
         val namesProperty =
-            PropertySpec.builder("SCENARIO_NAMES", List::class.asClassName().parameterizedBy(String::class.asClassName()))
-                .initializer(
-                    CodeBlock.builder().apply {
-                        add("listOf(")
-                        entries.forEachIndexed { index, entry ->
-                            if (index > 0) add(", ")
-                            add("%S", entry.name)
-                        }
-                        add(")")
-                    }.build(),
-                )
-                .build()
+            PropertySpec
+                .builder(
+                    "SCENARIO_NAMES",
+                    List::class.asClassName().parameterizedBy(String::class.asClassName()),
+                ).initializer(
+                    CodeBlock
+                        .builder()
+                        .apply {
+                            add("listOf(")
+                            entries.forEachIndexed { index, entry ->
+                                if (index > 0) add(", ")
+                                add("%S", entry.name)
+                            }
+                            add(")")
+                        }.build(),
+                ).build()
 
         val scenariosFun =
-            FunSpec.builder("scenarios")
+            FunSpec
+                .builder("scenarios")
                 .addModifiers(KModifier.OVERRIDE)
                 .returns(List::class.asClassName().parameterizedBy(scenarioSpec))
                 .addStatement("return scenarios")
                 .build()
 
         val renderFun =
-            FunSpec.builder("Render")
+            FunSpec
+                .builder("Render")
                 .addModifiers(KModifier.OVERRIDE)
                 .addAnnotation(ClassName("androidx.compose.runtime", "Composable"))
                 .addParameter("name", String::class)
@@ -178,19 +204,20 @@ private class RecordGifSymbolProcessor(
                         addStatement("%S -> %L()", entry.name, entry.qualifiedFunctionName)
                     }
                     addStatement("else -> error(%P)", "Unknown GIF scenario: \$name")
-                }
-                .endControlFlow()
+                }.endControlFlow()
                 .build()
 
         val initBlock =
-            CodeBlock.builder()
+            CodeBlock
+                .builder()
                 .beginControlFlow("for (scenario in scenarios)")
                 .addStatement("%T.validate(scenario)", validator)
                 .endControlFlow()
                 .build()
 
         val type =
-            TypeSpec.objectBuilder(GENERATED_OBJECT_NAME)
+            TypeSpec
+                .objectBuilder(GENERATED_OBJECT_NAME)
                 .addSuperinterface(scenarioRegistry)
                 .addProperty(scenariosProperty)
                 .addProperty(namesProperty)
@@ -199,7 +226,8 @@ private class RecordGifSymbolProcessor(
                 .addFunction(renderFun)
                 .build()
 
-        FileSpec.builder(GENERATED_PACKAGE, GENERATED_OBJECT_NAME)
+        FileSpec
+            .builder(GENERATED_PACKAGE, GENERATED_OBJECT_NAME)
             .addType(type)
             .build()
             .writeTo(codeGenerator = codeGenerator, aggregating = true)
@@ -207,6 +235,45 @@ private class RecordGifSymbolProcessor(
 
     private fun KSFunctionDeclaration.extractArguments(): AnnotationArgs {
         val args = annotations.first { it.shortName.asString() == "RecordGif" }.arguments
+        val explicitGestures =
+            args.valueAsAnnotations("gestures").map { gesture ->
+                val gestureArgs = gesture.arguments
+                GestureSpec(
+                    type = gestureArgs.valueAsEnumName("type") ?: "PAUSE",
+                    frames = gestureArgs.valueAsInt("frames") ?: 0,
+                    xFraction = gestureArgs.valueAsFloat("xFraction") ?: 0.5f,
+                    yFraction = gestureArgs.valueAsFloat("yFraction") ?: 0.5f,
+                    framesAfter = gestureArgs.valueAsInt("framesAfter") ?: 0,
+                    points =
+                        gestureArgs.valueAsAnnotations("points").map { point ->
+                            val pointArgs = point.arguments
+                            PointSpec(
+                                x = pointArgs.valueAsFloat("x") ?: 0f,
+                                y = pointArgs.valueAsFloat("y") ?: 0f,
+                            )
+                        },
+                    holdStartFrames = gestureArgs.valueAsInt("holdStartFrames") ?: 0,
+                    framesPerWaypoint = gestureArgs.valueAsInt("framesPerWaypoint") ?: 0,
+                    releaseFrames = gestureArgs.valueAsInt("releaseFrames") ?: 0,
+                )
+            }
+        val interactionGestures =
+            args.valueAsAnnotations("interactions").flatMap { interaction ->
+                val interactionArgs = interaction.arguments
+                InteractionGestureExpander.expand(
+                    InteractionSpec(
+                        type = interactionArgs.valueAsEnumName("type") ?: "PAUSE",
+                        frames = interactionArgs.valueAsInt("frames") ?: 0,
+                        framesAfter = interactionArgs.valueAsInt("framesAfter") ?: 0,
+                        target = interactionArgs.valueAsEnumName("target") ?: "CENTER",
+                        direction = interactionArgs.valueAsEnumName("direction") ?: "LEFT_TO_RIGHT",
+                        distance = interactionArgs.valueAsEnumName("distance") ?: "MEDIUM",
+                        travelFrames = interactionArgs.valueAsInt("travelFrames") ?: 8,
+                        holdStartFrames = interactionArgs.valueAsInt("holdStartFrames") ?: 0,
+                        releaseFrames = interactionArgs.valueAsInt("releaseFrames") ?: 0,
+                    ),
+                )
+            }
         return AnnotationArgs(
             name = args.valueAsString("name") ?: "",
             durationMs = args.valueAsInt("durationMs") ?: 1800,
@@ -214,8 +281,77 @@ private class RecordGifSymbolProcessor(
             widthPx = args.valueAsInt("widthPx") ?: 540,
             heightPx = args.valueAsInt("heightPx") ?: 0,
             theme = (args.valueAsEnumName("theme") ?: "DARK"),
+            interactionNodeTag = args.valueAsString("interactionNodeTag") ?: "",
+            gestures = interactionGestures + explicitGestures,
         )
     }
+
+    private fun buildGestureListCode(
+        gestures: List<GestureSpec>,
+        gestureStepClass: ClassName,
+        gestureTypeClass: ClassName,
+        fractionPointClass: ClassName,
+    ): CodeBlock =
+        CodeBlock
+            .builder()
+            .apply {
+                if (gestures.isEmpty()) {
+                    add("emptyList()")
+                    return@apply
+                }
+                add("listOf(\n")
+                gestures.forEachIndexed { index, gesture ->
+                    val pointsCode = buildPointListCode(gesture.points, fractionPointClass)
+                    add(
+                        "      %T(type = %T.%L, frames = %L, xFraction = %L.toFloat(), yFraction = %L.toFloat(), framesAfter = %L, points = %L, holdStartFrames = %L, framesPerWaypoint = %L, releaseFrames = %L)",
+                        gestureStepClass,
+                        gestureTypeClass,
+                        gesture.type,
+                        gesture.frames,
+                        gesture.xFraction,
+                        gesture.yFraction,
+                        gesture.framesAfter,
+                        pointsCode,
+                        gesture.holdStartFrames,
+                        gesture.framesPerWaypoint,
+                        gesture.releaseFrames,
+                    )
+                    if (index != gestures.lastIndex) {
+                        add(",\n")
+                    } else {
+                        add("\n")
+                    }
+                }
+                add("    )")
+            }.build()
+
+    private fun buildPointListCode(
+        points: List<PointSpec>,
+        fractionPointClass: ClassName,
+    ): CodeBlock =
+        CodeBlock
+            .builder()
+            .apply {
+                if (points.isEmpty()) {
+                    add("emptyList()")
+                    return@apply
+                }
+                add("listOf(\n")
+                points.forEachIndexed { index, point ->
+                    add(
+                        "          %T(x = %L.toFloat(), y = %L.toFloat())",
+                        fractionPointClass,
+                        point.x,
+                        point.y,
+                    )
+                    if (index != points.lastIndex) {
+                        add(",\n")
+                    } else {
+                        add("\n")
+                    }
+                }
+                add("      )")
+            }.build()
 
     private data class AnnotationArgs(
         val name: String,
@@ -224,6 +360,8 @@ private class RecordGifSymbolProcessor(
         val widthPx: Int,
         val heightPx: Int,
         val theme: String,
+        val interactionNodeTag: String,
+        val gestures: List<GestureSpec>,
     )
 
     private data class ScenarioEntry(
@@ -234,6 +372,8 @@ private class RecordGifSymbolProcessor(
         val widthPx: Int,
         val heightPx: Int,
         val theme: String,
+        val interactionNodeTag: String,
+        val gestures: List<GestureSpec>,
     )
 }
 
@@ -242,6 +382,24 @@ private fun List<KSValueArgument>.valueAsString(name: String): String? =
 
 private fun List<KSValueArgument>.valueAsInt(name: String): Int? =
     firstOrNull { it.name?.asString() == name }?.value as? Int
+
+private fun List<KSValueArgument>.valueAsFloat(name: String): Float? {
+    val value = firstOrNull { it.name?.asString() == name }?.value ?: return null
+    return when (value) {
+        is Float -> value
+        is Double -> value.toFloat()
+        else -> null
+    }
+}
+
+private fun List<KSValueArgument>.valueAsAnnotations(name: String): List<KSAnnotation> {
+    val value = firstOrNull { it.name?.asString() == name }?.value ?: return emptyList()
+    return when (value) {
+        is List<*> -> value.mapNotNull { it as? KSAnnotation }
+        is KSAnnotation -> listOf(value)
+        else -> emptyList()
+    }
+}
 
 private fun List<KSValueArgument>.valueAsEnumName(name: String): String? {
     val value = firstOrNull { it.name?.asString() == name }?.value ?: return null
