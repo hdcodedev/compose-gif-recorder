@@ -1,5 +1,10 @@
 package io.github.hdcodedev.composegif.ksp
 
+import io.github.hdcodedev.composegif.annotations.GifGestureType
+import io.github.hdcodedev.composegif.annotations.GifInteractionTarget
+import io.github.hdcodedev.composegif.annotations.GifInteractionType
+import io.github.hdcodedev.composegif.annotations.GifSwipeDirection
+import io.github.hdcodedev.composegif.annotations.GifSwipeDistance
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -10,13 +15,13 @@ class InteractionGestureExpanderTest {
         val gestures =
             InteractionGestureExpander.expand(
                 InteractionSpec(
-                    type = "PAUSE",
+                    type = GifInteractionType.PAUSE.name,
                     frames = 12,
                 ),
             )
 
         assertEquals(1, gestures.size)
-        assertEquals("PAUSE", gestures.single().type)
+        assertEquals(GifGestureType.PAUSE.name, gestures.single().type)
         assertEquals(12, gestures.single().frames)
     }
 
@@ -25,15 +30,15 @@ class InteractionGestureExpanderTest {
         val gestures =
             InteractionGestureExpander.expand(
                 InteractionSpec(
-                    type = "TAP",
-                    target = "RIGHT",
+                    type = GifInteractionType.TAP.name,
+                    target = GifInteractionTarget.RIGHT.name,
                     frames = 7,
                     framesAfter = 0,
                 ),
             )
 
         val tap = gestures.single()
-        assertEquals("TAP", tap.type)
+        assertEquals(GifGestureType.TAP.name, tap.type)
         assertEquals(0.70f, tap.xFraction)
         assertEquals(0.5f, tap.yFraction)
         assertEquals(7, tap.framesAfter)
@@ -44,10 +49,10 @@ class InteractionGestureExpanderTest {
         val gestures =
             InteractionGestureExpander.expand(
                 InteractionSpec(
-                    type = "SWIPE",
-                    target = "TOP",
-                    direction = "RIGHT_TO_LEFT",
-                    distance = "LONG",
+                    type = GifInteractionType.SWIPE.name,
+                    target = GifInteractionTarget.TOP.name,
+                    direction = GifSwipeDirection.RIGHT_TO_LEFT.name,
+                    distance = GifSwipeDistance.LONG.name,
                     travelFrames = 9,
                     holdStartFrames = 4,
                     releaseFrames = 3,
@@ -57,14 +62,14 @@ class InteractionGestureExpanderTest {
 
         assertEquals(2, gestures.size)
         val drag = gestures[0]
-        assertEquals("DRAG_PATH", drag.type)
+        assertEquals(GifGestureType.DRAG_PATH.name, drag.type)
         assertEquals(4, drag.holdStartFrames)
         assertEquals(9, drag.framesPerWaypoint)
         assertEquals(3, drag.releaseFrames)
         assertEquals(2, drag.points.size)
         assertTrue(drag.points[0].x > drag.points[1].x)
         assertEquals(0.30f, drag.points[0].y)
-        assertEquals("PAUSE", gestures[1].type)
+        assertEquals(GifGestureType.PAUSE.name, gestures[1].type)
         assertEquals(5, gestures[1].frames)
     }
 
@@ -73,22 +78,34 @@ class InteractionGestureExpanderTest {
         val leftToRight =
             InteractionGestureExpander
                 .expand(
-                    InteractionSpec(type = "SWIPE", direction = "LEFT_TO_RIGHT"),
+                    InteractionSpec(
+                        type = GifInteractionType.SWIPE.name,
+                        direction = GifSwipeDirection.LEFT_TO_RIGHT.name,
+                    ),
                 ).first()
         val rightToLeft =
             InteractionGestureExpander
                 .expand(
-                    InteractionSpec(type = "SWIPE", direction = "RIGHT_TO_LEFT"),
+                    InteractionSpec(
+                        type = GifInteractionType.SWIPE.name,
+                        direction = GifSwipeDirection.RIGHT_TO_LEFT.name,
+                    ),
                 ).first()
         val topToBottom =
             InteractionGestureExpander
                 .expand(
-                    InteractionSpec(type = "SWIPE", direction = "TOP_TO_BOTTOM"),
+                    InteractionSpec(
+                        type = GifInteractionType.SWIPE.name,
+                        direction = GifSwipeDirection.TOP_TO_BOTTOM.name,
+                    ),
                 ).first()
         val bottomToTop =
             InteractionGestureExpander
                 .expand(
-                    InteractionSpec(type = "SWIPE", direction = "BOTTOM_TO_TOP"),
+                    InteractionSpec(
+                        type = GifInteractionType.SWIPE.name,
+                        direction = GifSwipeDirection.BOTTOM_TO_TOP.name,
+                    ),
                 ).first()
 
         assertTrue(leftToRight.points.first().x < leftToRight.points.last().x)
@@ -102,17 +119,26 @@ class InteractionGestureExpanderTest {
         val shortSwipe =
             InteractionGestureExpander
                 .expand(
-                    InteractionSpec(type = "SWIPE", distance = "SHORT"),
+                    InteractionSpec(
+                        type = GifInteractionType.SWIPE.name,
+                        distance = GifSwipeDistance.SHORT.name,
+                    ),
                 ).first()
         val mediumSwipe =
             InteractionGestureExpander
                 .expand(
-                    InteractionSpec(type = "SWIPE", distance = "MEDIUM"),
+                    InteractionSpec(
+                        type = GifInteractionType.SWIPE.name,
+                        distance = GifSwipeDistance.MEDIUM.name,
+                    ),
                 ).first()
         val longSwipe =
             InteractionGestureExpander
                 .expand(
-                    InteractionSpec(type = "SWIPE", distance = "LONG"),
+                    InteractionSpec(
+                        type = GifInteractionType.SWIPE.name,
+                        distance = GifSwipeDistance.LONG.name,
+                    ),
                 ).first()
 
         val shortDelta = shortSwipe.points.last().x - shortSwipe.points.first().x
@@ -121,6 +147,96 @@ class InteractionGestureExpanderTest {
 
         assertTrue(shortDelta < mediumDelta)
         assertTrue(mediumDelta < longDelta)
+    }
+
+    @Test
+    fun horizontalSwipeUsesTopBottomTargetLaneAndIgnoresLeftRightTarget() {
+        val topLane =
+            InteractionGestureExpander
+                .expand(
+                    InteractionSpec(
+                        type = GifInteractionType.SWIPE.name,
+                        direction = GifSwipeDirection.LEFT_TO_RIGHT.name,
+                        target = GifInteractionTarget.TOP.name,
+                    ),
+                ).first()
+        val bottomLane =
+            InteractionGestureExpander
+                .expand(
+                    InteractionSpec(
+                        type = GifInteractionType.SWIPE.name,
+                        direction = GifSwipeDirection.LEFT_TO_RIGHT.name,
+                        target = GifInteractionTarget.BOTTOM.name,
+                    ),
+                ).first()
+        val leftTarget =
+            InteractionGestureExpander
+                .expand(
+                    InteractionSpec(
+                        type = GifInteractionType.SWIPE.name,
+                        direction = GifSwipeDirection.LEFT_TO_RIGHT.name,
+                        target = GifInteractionTarget.LEFT.name,
+                    ),
+                ).first()
+        val rightTarget =
+            InteractionGestureExpander
+                .expand(
+                    InteractionSpec(
+                        type = GifInteractionType.SWIPE.name,
+                        direction = GifSwipeDirection.LEFT_TO_RIGHT.name,
+                        target = GifInteractionTarget.RIGHT.name,
+                    ),
+                ).first()
+
+        assertEquals(0.30f, topLane.points.first().y)
+        assertEquals(0.70f, bottomLane.points.first().y)
+        assertEquals(0.5f, leftTarget.points.first().y)
+        assertEquals(0.5f, rightTarget.points.first().y)
+    }
+
+    @Test
+    fun verticalSwipeUsesLeftRightTargetLaneAndIgnoresTopBottomTarget() {
+        val leftLane =
+            InteractionGestureExpander
+                .expand(
+                    InteractionSpec(
+                        type = GifInteractionType.SWIPE.name,
+                        direction = GifSwipeDirection.TOP_TO_BOTTOM.name,
+                        target = GifInteractionTarget.LEFT.name,
+                    ),
+                ).first()
+        val rightLane =
+            InteractionGestureExpander
+                .expand(
+                    InteractionSpec(
+                        type = GifInteractionType.SWIPE.name,
+                        direction = GifSwipeDirection.TOP_TO_BOTTOM.name,
+                        target = GifInteractionTarget.RIGHT.name,
+                    ),
+                ).first()
+        val topTarget =
+            InteractionGestureExpander
+                .expand(
+                    InteractionSpec(
+                        type = GifInteractionType.SWIPE.name,
+                        direction = GifSwipeDirection.TOP_TO_BOTTOM.name,
+                        target = GifInteractionTarget.TOP.name,
+                    ),
+                ).first()
+        val bottomTarget =
+            InteractionGestureExpander
+                .expand(
+                    InteractionSpec(
+                        type = GifInteractionType.SWIPE.name,
+                        direction = GifSwipeDirection.TOP_TO_BOTTOM.name,
+                        target = GifInteractionTarget.BOTTOM.name,
+                    ),
+                ).first()
+
+        assertEquals(0.30f, leftLane.points.first().x)
+        assertEquals(0.70f, rightLane.points.first().x)
+        assertEquals(0.5f, topTarget.points.first().x)
+        assertEquals(0.5f, bottomTarget.points.first().x)
     }
 
     @Test

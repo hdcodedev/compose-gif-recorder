@@ -56,6 +56,16 @@ public annotation class GifInteraction(
     val type: GifInteractionType = GifInteractionType.PAUSE,
     val frames: Int = 0,
     val framesAfter: Int = 0,
+    /**
+     * Target lane for the interaction.
+     *
+     * For taps, this is the tap point.
+     *
+     * For swipes, this selects the lane perpendicular to the swipe direction:
+     * - horizontal swipes (`LEFT_TO_RIGHT`, `RIGHT_TO_LEFT`) use `TOP`/`BOTTOM` for Y lane,
+     * - vertical swipes (`TOP_TO_BOTTOM`, `BOTTOM_TO_TOP`) use `LEFT`/`RIGHT` for X lane,
+     * - other values fall back to center lane.
+     */
     val target: GifInteractionTarget = GifInteractionTarget.CENTER,
     val direction: GifSwipeDirection = GifSwipeDirection.LEFT_TO_RIGHT,
     val distance: GifSwipeDistance = GifSwipeDistance.MEDIUM,
