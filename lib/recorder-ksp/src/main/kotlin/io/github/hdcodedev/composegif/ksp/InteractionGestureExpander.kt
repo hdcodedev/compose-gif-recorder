@@ -150,7 +150,7 @@ internal object InteractionGestureExpander {
         when (speed) {
             "FAST" -> SwipeTiming(travelFrames = 6, holdStartFrames = 2, releaseFrames = 2)
             "SLOW" -> SwipeTiming(travelFrames = 12, holdStartFrames = 10, releaseFrames = 10)
-            else -> SwipeTiming(travelFrames = 8, holdStartFrames = 6, releaseFrames = 6)
+            else -> error("Unhandled swipe speed preset: $speed")
         }
 }
 
