@@ -12,7 +12,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             DemoTheme(dynamicColor = false) {
-                AnimationDemoScreen()
+                ChartDemoScreen()
             }
         }
     }

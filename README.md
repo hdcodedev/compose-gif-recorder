@@ -1,4 +1,4 @@
-# compose-gif-recorder
+<h1 align="center">compose-gif-recorder</h1>
 
 <p align="center">
   <a href="https://central.sonatype.com/artifact/io.github.hdcodedev/compose-gif-recorder-gradle-plugin">
@@ -13,42 +13,49 @@
   <img src="https://img.shields.io/badge/KSP-2.3.0-FF6F00" />
 </p>
 
-Standalone workspace for deterministic GIF capture from annotated Compose composables.
+<p align="center">
+  Deterministic GIF recording for Jetpack Compose scenarios using a Gradle plugin + <a href="lib/recorder-annotations/src/main/kotlin/io/github/hdcodedev/composegif/annotations/RecordGif.kt"><code>RecordGif.kt</code></a>
+</p>
 
-## Layout
+## Requirements
 
-- `lib/`: publishable library stack (annotations, core, KSP, Android runtime, Gradle plugin)
-- `app/`: wizard-based Android demo app consuming recorder artifacts from `mavenLocal()`
-- `tools/bootstrap-local.sh`: publishes library artifacts to local Maven
-- `tools/record-gifs.sh`: publishes + runs end-to-end GIF capture in the demo app
+- Android app module using Jetpack Compose
+- Gradle plugins: Android application, Kotlin Compose, KSP
+- Installed tools on `PATH`: `adb`, `ffmpeg`, `ffprobe`, `gifsicle`
+- Running emulator or connected Android device
 
-## Quick start
+## Use In Your App
 
-```bash
-cd /Users/hd/Projects/compose-gif-recorder
-./tools/bootstrap-local.sh
-./gradlew :app:listGifScenarios
-./gradlew :app:recordGifsDebug
+### 1. Apply plugins in your app module
+
+```kotlin
+plugins {
+    id("com.android.application")
+    id("org.jetbrains.kotlin.plugin.compose")
+    id("com.google.devtools.ksp")
+    id("io.github.hdcodedev.compose-gif-recorder") version "<version>"
+}
 ```
 
-Single scenario:
+The plugin wires recorder dependencies automatically (`annotations`, `core`, `android`, `ksp`).
 
-```bash
-./gradlew :app:recordGifDebug -PgifScenario=floating_orb_demo
+### 2. Configure the recorder
+
+```kotlin
+gifRecorder {
+    applicationId.set("com.example.app")
+    // Optional; default is "artifacts/gifs" in the app module
+    outputDir.set(layout.projectDirectory.dir("artifacts/gifs"))
+}
 ```
 
-GIF outputs are written under:
+### 3. Add a GIF scenario
 
-`app/artifacts/gifs`
+Rules:
 
-## Add a new scenario
-
-1. Create a top-level, parameterless `@Composable` function.
-2. Add `@RecordGif` annotation.
-3. Run `./gradlew :app:listGifScenarios` to verify discovery.
-4. Run `./gradlew :app:recordGifsDebug` (or `recordGifDebug` for one scenario).
-
-Example:
+- Top-level function
+- `@Composable`
+- No parameters
 
 ```kotlin
 import androidx.compose.runtime.Composable
@@ -57,32 +64,43 @@ import io.github.hdcodedev.composegif.annotations.RecordGif
 @Composable
 @RecordGif(name = "my_new_animation", durationMs = 2200)
 fun MyNewAnimationScenario() {
-    // animation content
+    // UI content
 }
 ```
 
-## ADB auto-discovery
+### 4. Run tasks
 
-`recordGifDebug` / `recordGifsDebug` try to find `adb` automatically in this order:
+List available scenarios:
 
-1. `PATH`
-2. `$ANDROID_SDK_ROOT/platform-tools/adb`
-3. `$ANDROID_HOME/platform-tools/adb`
-4. `~/Library/Android/sdk/platform-tools/adb` (macOS common location)
-5. `~/Android/Sdk/platform-tools/adb` (Linux common location)
+```bash
+./gradlew :app:listGifScenarios
+```
 
-If none are found, set `adbBin` explicitly in `app/build.gradle.kts`:
+Record one scenario:
+
+```bash
+./gradlew :app:recordGifDebug -PgifScenario=my_new_animation
+```
+
+Record all scenarios:
+
+```bash
+./gradlew :app:recordGifsDebug
+```
+
+Generated GIFs are written to `app/artifacts/gifs` (or your configured `outputDir`).
+If your application module is not named `app`, replace `:app:` in the commands.
+
+## Common Configuration
+
+You can override binaries/device selection when needed:
 
 ```kotlin
 gifRecorder {
-    adbBin.set("${System.getProperty(\"user.home\")}/Library/Android/sdk/platform-tools/adb")
+    adbSerial.set("emulator-5554") // default: auto
+    adbBin.set("adb")
+    ffmpegBin.set("ffmpeg")
+    ffprobeBin.set("ffprobe")
+    gifsicleBin.set("gifsicle")
 }
 ```
-
-## AGP/KSP compatibility note
-
-This demo app uses built-in Kotlin and KSP together with:
-
-`android.disallowKotlinSourceSets=false`
-
-in `gradle.properties`.
