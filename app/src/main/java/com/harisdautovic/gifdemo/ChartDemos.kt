@@ -139,12 +139,7 @@ fun BarChartDemo() {
             target = GifInteractionTarget.CENTER,
             direction = GifSwipeDirection.LEFT_TO_RIGHT,
             distance = GifSwipeDistance.MEDIUM,
-            speed = GifSwipeSpeed.NORMAL,
-        ),
-        GifInteraction(
-            type = GifInteractionType.TAP,
-            target = GifInteractionTarget.RIGHT,
-            framesAfter = 10,
+            speed = GifSwipeSpeed.SLOW,
         ),
     ],
 )

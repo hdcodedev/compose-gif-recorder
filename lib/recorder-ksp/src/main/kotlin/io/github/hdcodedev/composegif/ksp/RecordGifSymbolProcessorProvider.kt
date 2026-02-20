@@ -21,6 +21,7 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.ksp.writeTo
+import io.github.hdcodedev.composegif.annotations.GifSwipeSpeed
 import io.github.hdcodedev.composegif.annotations.RecordGif
 
 private const val GENERATED_PACKAGE = "io.github.hdcodedev.composegif.generated"
@@ -245,6 +246,8 @@ private class RecordGifSymbolProcessor(
 
     private fun KSFunctionDeclaration.extractArguments(): AnnotationArgs {
         val args = annotations.first { it.shortName.asString() == "RecordGif" }.arguments
+        val fps = args.valueAsInt("fps") ?: 50
+        val interactionStartDelayMs = args.valueAsInt("interactionStartDelayMs") ?: DEFAULT_INTERACTION_START_DELAY_MS
         val explicitGestures =
             args.valueAsAnnotations("gestures").map { gesture ->
                 val gestureArgs = gesture.arguments
@@ -278,22 +281,38 @@ private class RecordGifSymbolProcessor(
                         target = interactionArgs.valueAsEnumName("target") ?: "CENTER",
                         direction = interactionArgs.valueAsEnumName("direction") ?: "LEFT_TO_RIGHT",
                         distance = interactionArgs.valueAsEnumName("distance") ?: "MEDIUM",
-                        speed = interactionArgs.valueAsEnumName("speed") ?: "CUSTOM",
+                        speed =
+                            interactionArgs
+                                .valueAsEnumName("speed")
+                                ?.let { enumName -> runCatching { GifSwipeSpeed.valueOf(enumName) }.getOrNull() }
+                                ?: GifSwipeSpeed.CUSTOM,
                         travelFrames = interactionArgs.valueAsInt("travelFrames") ?: 8,
                         holdStartFrames = interactionArgs.valueAsInt("holdStartFrames") ?: 0,
                         releaseFrames = interactionArgs.valueAsInt("releaseFrames") ?: 0,
                     ),
                 )
             }
+        val gestures =
+            applyInteractionStartDelay(
+                gestures = interactionGestures + explicitGestures,
+                interactionStartDelayMs = interactionStartDelayMs,
+                fps = fps,
+            )
+        val durationMs =
+            ensureDurationMsAtLeastGestureBudget(
+                durationMs = args.valueAsInt("durationMs") ?: DEFAULT_DURATION_MS,
+                fps = fps,
+                gestures = gestures,
+            )
         return AnnotationArgs(
             name = args.valueAsString("name") ?: "",
-            durationMs = args.valueAsInt("durationMs") ?: DEFAULT_DURATION_MS,
-            fps = args.valueAsInt("fps") ?: 50,
+            durationMs = durationMs,
+            fps = fps,
             widthPx = args.valueAsInt("widthPx") ?: 540,
             heightPx = args.valueAsInt("heightPx") ?: 0,
             theme = (args.valueAsEnumName("theme") ?: "DARK"),
             interactionNodeTag = args.valueAsString("interactionNodeTag") ?: "",
-            gestures = interactionGestures + explicitGestures,
+            gestures = gestures,
         )
     }
 

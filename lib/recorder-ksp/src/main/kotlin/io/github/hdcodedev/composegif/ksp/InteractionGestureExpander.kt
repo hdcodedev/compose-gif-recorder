@@ -1,5 +1,7 @@
 package io.github.hdcodedev.composegif.ksp
 
+import io.github.hdcodedev.composegif.annotations.GifSwipeSpeed
+
 internal data class InteractionSpec(
     val type: String,
     val frames: Int = 0,
@@ -7,7 +9,7 @@ internal data class InteractionSpec(
     val target: String = "CENTER",
     val direction: String = "LEFT_TO_RIGHT",
     val distance: String = "MEDIUM",
-    val speed: String = "CUSTOM",
+    val speed: GifSwipeSpeed = GifSwipeSpeed.CUSTOM,
     val travelFrames: Int = 8,
     val holdStartFrames: Int = 0,
     val releaseFrames: Int = 0,
@@ -136,7 +138,7 @@ internal object InteractionGestureExpander {
     }
 
     private fun swipeTiming(spec: InteractionSpec): SwipeTiming =
-        if (spec.speed == "CUSTOM") {
+        if (spec.speed == GifSwipeSpeed.CUSTOM) {
             SwipeTiming(
                 travelFrames = spec.travelFrames,
                 holdStartFrames = spec.holdStartFrames,
@@ -146,12 +148,12 @@ internal object InteractionGestureExpander {
             speedToTiming(spec.speed)
         }
 
-    private fun speedToTiming(speed: String): SwipeTiming =
+    private fun speedToTiming(speed: GifSwipeSpeed): SwipeTiming =
         when (speed) {
-            "FAST" -> SwipeTiming(travelFrames = 6, holdStartFrames = 2, releaseFrames = 2)
-            "NORMAL" -> SwipeTiming(travelFrames = 8, holdStartFrames = 6, releaseFrames = 6)
-            "SLOW" -> SwipeTiming(travelFrames = 12, holdStartFrames = 10, releaseFrames = 10)
-            else -> error("Unhandled swipe speed preset: $speed")
+            GifSwipeSpeed.FAST -> SwipeTiming(travelFrames = 24, holdStartFrames = 10, releaseFrames = 10)
+            GifSwipeSpeed.NORMAL -> SwipeTiming(travelFrames = 36, holdStartFrames = 24, releaseFrames = 24)
+            GifSwipeSpeed.SLOW -> SwipeTiming(travelFrames = 56, holdStartFrames = 44, releaseFrames = 44)
+            GifSwipeSpeed.CUSTOM -> error("CUSTOM should be handled before speed mapping")
         }
 }
 

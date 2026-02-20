@@ -80,14 +80,14 @@ class InteractionGestureExpanderTest {
             InteractionGestureExpander.expand(
                 InteractionSpec(
                     type = GifInteractionType.SWIPE.name,
-                    speed = GifSwipeSpeed.NORMAL.name,
+                    speed = GifSwipeSpeed.NORMAL,
                 ),
             )
 
         val drag = gestures.single()
-        assertEquals(6, drag.holdStartFrames)
-        assertEquals(8, drag.framesPerWaypoint)
-        assertEquals(6, drag.releaseFrames)
+        assertEquals(24, drag.holdStartFrames)
+        assertEquals(36, drag.framesPerWaypoint)
+        assertEquals(24, drag.releaseFrames)
     }
 
     @Test
@@ -96,14 +96,14 @@ class InteractionGestureExpanderTest {
             InteractionGestureExpander.expand(
                 InteractionSpec(
                     type = GifInteractionType.SWIPE.name,
-                    speed = GifSwipeSpeed.SLOW.name,
+                    speed = GifSwipeSpeed.SLOW,
                 ),
             )
 
         val drag = gestures.single()
-        assertEquals(10, drag.holdStartFrames)
-        assertEquals(12, drag.framesPerWaypoint)
-        assertEquals(10, drag.releaseFrames)
+        assertEquals(44, drag.holdStartFrames)
+        assertEquals(56, drag.framesPerWaypoint)
+        assertEquals(44, drag.releaseFrames)
     }
 
     @Test
@@ -112,7 +112,7 @@ class InteractionGestureExpanderTest {
             InteractionGestureExpander.expand(
                 InteractionSpec(
                     type = GifInteractionType.SWIPE.name,
-                    speed = GifSwipeSpeed.CUSTOM.name,
+                    speed = GifSwipeSpeed.CUSTOM,
                     holdStartFrames = 3,
                     travelFrames = 11,
                     releaseFrames = 4,
@@ -131,7 +131,7 @@ class InteractionGestureExpanderTest {
             InteractionGestureExpander.expand(
                 InteractionSpec(
                     type = GifInteractionType.SWIPE.name,
-                    speed = GifSwipeSpeed.FAST.name,
+                    speed = GifSwipeSpeed.FAST,
                     holdStartFrames = 99,
                     travelFrames = 99,
                     releaseFrames = 99,
@@ -139,9 +139,9 @@ class InteractionGestureExpanderTest {
             )
 
         val drag = gestures.single()
-        assertEquals(2, drag.holdStartFrames)
-        assertEquals(6, drag.framesPerWaypoint)
-        assertEquals(2, drag.releaseFrames)
+        assertEquals(10, drag.holdStartFrames)
+        assertEquals(24, drag.framesPerWaypoint)
+        assertEquals(10, drag.releaseFrames)
     }
 
     @Test

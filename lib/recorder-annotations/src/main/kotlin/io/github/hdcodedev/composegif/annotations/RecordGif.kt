@@ -9,6 +9,12 @@ public annotation class RecordGif(
     val widthPx: Int = 540,
     val heightPx: Int = 0,
     val theme: GifTheme = GifTheme.DARK,
+    /**
+     * Delay before replaying configured interactions/gestures.
+     *
+     * Useful for letting first-render animations settle before input starts.
+     */
+    val interactionStartDelayMs: Int = 1000,
     val interactionNodeTag: String = "",
     val interactions: Array<GifInteraction> = [],
     val gestures: Array<GifGestureStep> = [],
