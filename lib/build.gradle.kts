@@ -2,7 +2,7 @@ import org.gradle.api.tasks.Copy
 
 plugins {
     base
-    alias(libs.plugins.dokka) apply false
+    alias(libs.plugins.dokka)
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.android.library) apply false
@@ -18,6 +18,12 @@ val publishableModules = listOf(
     ":recorder-android",
     ":recorder-gradle-plugin"
 )
+
+dependencies {
+    publishableModules.forEach { modulePath ->
+        add("dokka", project(modulePath))
+    }
+}
 
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
@@ -66,13 +72,8 @@ tasks.register("publishRecorderModulesToMavenLocal") {
 
 tasks.register<Copy>("dokkaPublicApi") {
     group = "documentation"
-    description = "Generates Dokka HTML docs for published recorder modules"
-    dependsOn(publishableModules.map { "$it:dokkaGeneratePublicationHtml" })
+    description = "Generates aggregated Dokka HTML docs for published recorder modules"
+    dependsOn("dokkaGeneratePublicationHtml")
     into(layout.buildDirectory.dir("dokka/public-api"))
-    publishableModules.forEach { modulePath ->
-        val moduleName = modulePath.removePrefix(":")
-        from(project(modulePath).layout.buildDirectory.dir("dokka/html")) {
-            into(moduleName)
-        }
-    }
+    from(layout.buildDirectory.dir("dokka/html"))
 }

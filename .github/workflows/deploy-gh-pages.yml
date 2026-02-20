@@ -41,27 +41,6 @@ jobs:
           mkdir -p site
           cp -R lib/build/dokka/public-api/. site/
 
-          cat > site/index.html << 'EOF'
-          <!doctype html>
-          <html>
-          <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width,initial-scale=1">
-            <title>Compose GIF Recorder API</title>
-          </head>
-          <body>
-            <h1>Compose GIF Recorder API</h1>
-            <ul>
-              <li><a href="./recorder-annotations/">Annotations</a></li>
-              <li><a href="./recorder-core/">Core</a></li>
-              <li><a href="./recorder-ksp/">KSP</a></li>
-              <li><a href="./recorder-android/">Android</a></li>
-              <li><a href="./recorder-gradle-plugin/">Gradle Plugin</a></li>
-            </ul>
-          </body>
-          </html>
-          EOF
-
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
