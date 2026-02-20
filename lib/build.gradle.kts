@@ -1,5 +1,6 @@
 plugins {
     base
+    alias(libs.plugins.dokka) apply false
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.android.library) apply false
@@ -7,6 +8,14 @@ plugins {
     alias(libs.plugins.vanniktech.publish) apply false
     alias(libs.plugins.ktlint) apply false
 }
+
+val publishableModules = listOf(
+    ":recorder-annotations",
+    ":recorder-core",
+    ":recorder-ksp",
+    ":recorder-android",
+    ":recorder-gradle-plugin"
+)
 
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
@@ -26,14 +35,6 @@ allprojects {
         mavenCentral()
     }
 }
-
-val publishableModules = listOf(
-    ":recorder-annotations",
-    ":recorder-core",
-    ":recorder-ksp",
-    ":recorder-android",
-    ":recorder-gradle-plugin"
-)
 
 val testableJvmModules = listOf(
     ":recorder-annotations",
@@ -59,4 +60,25 @@ tasks.register("publishRecorderModulesToMavenLocal") {
     group = "publishing"
     description = "Publishes all recorder modules to Maven Local"
     dependsOn(publishableModules.map { "$it:publishToMavenLocal" })
+}
+
+tasks.register("dokkaPublicApi") {
+    group = "documentation"
+    description = "Generates Dokka HTML docs for published recorder modules"
+    dependsOn(publishableModules.map { "$it:dokkaGeneratePublicationHtml" })
+    outputs.dir(layout.buildDirectory.dir("dokka/public-api"))
+    doLast {
+        val outputRoot = layout.buildDirectory.dir("dokka/public-api").get().asFile
+        outputRoot.mkdirs()
+        publishableModules.forEach { modulePath ->
+            val moduleName = modulePath.removePrefix(":")
+            val moduleDocsDir = project(modulePath).layout.buildDirectory.dir("dokka/html").get().asFile
+            if (moduleDocsDir.exists()) {
+                copy {
+                    from(moduleDocsDir)
+                    into(outputRoot.resolve(moduleName))
+                }
+            }
+        }
+    }
 }
