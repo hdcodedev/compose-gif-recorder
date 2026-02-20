@@ -14,8 +14,16 @@
 </p>
 
 <p align="center">
-  Deterministic GIF recording for Jetpack Compose scenarios using a Gradle plugin + <a href="lib/recorder-annotations/src/main/kotlin/io/github/hdcodedev/composegif/annotations/RecordGif.kt"><code>RecordGif.kt</code></a>
+  Deterministic GIF recording for Jetpack Compose scenarios using a Gradle plugin
 </p>
+
+## Motivation
+
+This plugin was originally created to automate GIF generation
+for the Compose [Charts wiki documentation](https://charts.harisdautovic.com/2.2.0/wiki/examples).
+
+Whenever chart styles, animations, or APIs change,
+all documentation GIFs can be easily regenerated in an automated way.
 
 ## Requirements
 
