@@ -17,6 +17,10 @@
   Deterministic GIF recording for Jetpack Compose scenarios using a Gradle plugin
 </p>
 
+<p align="center">
+<img width="566" height="221" alt="Screenshot 2026-02-20 at 11 12 21" src="https://github.com/user-attachments/assets/adb13344-d0b1-4c9a-a0f1-02e00601e98d" />
+</p>
+
 ## Motivation
 
 This plugin was originally created to automate GIF generation
