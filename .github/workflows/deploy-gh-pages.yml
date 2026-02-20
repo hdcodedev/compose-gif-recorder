@@ -39,7 +39,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p site
-          cp -R lib/build/dokka/public-api/* site/
+          cp -R lib/build/dokka/public-api/. site/
 
           cat > site/index.html << 'EOF'
           <!doctype html>
