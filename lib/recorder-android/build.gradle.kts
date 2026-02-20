@@ -54,10 +54,10 @@ dependencies {
 }
 
 dokka {
-    dokkaSourceSets.register("main") {
+    dokkaSourceSets.maybeCreate("main").apply {
         sourceRoots.from(file("src/main/kotlin"))
         sourceRoots.from(file("src/main/java"))
-        classpath.from(configurations.getByName("releaseCompileClasspath"))
+        classpath.from(provider { configurations.getByName("releaseCompileClasspath") })
         analysisPlatform.set(org.jetbrains.dokka.gradle.engine.parameters.KotlinPlatform.AndroidJVM)
         documentedVisibilities.set(
             setOf(org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier.Public),
