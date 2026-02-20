@@ -1,5 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
+    base
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.ksp) apply false
@@ -20,4 +21,9 @@ tasks.register("appTest") {
     group = "verification"
     description = "Runs app unit tests for the demo project"
     dependsOn(":app:testDebugUnitTest")
+}
+
+tasks.named("clean") {
+    dependsOn(":app:clean")
+    dependsOn(gradle.includedBuild("lib").task(":clean"))
 }

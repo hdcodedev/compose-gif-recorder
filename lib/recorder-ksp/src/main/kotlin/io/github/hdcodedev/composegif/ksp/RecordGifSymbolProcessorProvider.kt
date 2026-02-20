@@ -25,6 +25,8 @@ import io.github.hdcodedev.composegif.annotations.RecordGif
 
 private const val GENERATED_PACKAGE = "io.github.hdcodedev.composegif.generated"
 private const val GENERATED_OBJECT_NAME = "GeneratedGifScenarioRegistry"
+private const val DEFAULT_DURATION_MS = 3000
+private val VALID_SCENARIO_NAME_REGEX = Regex("[a-zA-Z0-9_\\-]+")
 
 public class RecordGifSymbolProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor =
@@ -85,6 +87,14 @@ private class RecordGifSymbolProcessor(
             val args = function.extractArguments()
             val scenarioName =
                 args.name.takeIf { it.isNotBlank() } ?: ScenarioNaming.defaultName(function.simpleName.asString())
+            if (!scenarioName.matches(VALID_SCENARIO_NAME_REGEX)) {
+                logger.error(
+                    "Invalid @RecordGif scenario name '$scenarioName'. Use only [a-zA-Z0-9_-], or set an explicit name.",
+                    function,
+                )
+                hasErrors = true
+                return@forEach
+            }
             if (!duplicateCheck.add(scenarioName)) {
                 logger.error("Duplicate @RecordGif scenario name '$scenarioName'.", function)
                 hasErrors = true
@@ -276,7 +286,7 @@ private class RecordGifSymbolProcessor(
             }
         return AnnotationArgs(
             name = args.valueAsString("name") ?: "",
-            durationMs = args.valueAsInt("durationMs") ?: 1800,
+            durationMs = args.valueAsInt("durationMs") ?: DEFAULT_DURATION_MS,
             fps = args.valueAsInt("fps") ?: 50,
             widthPx = args.valueAsInt("widthPx") ?: 540,
             heightPx = args.valueAsInt("heightPx") ?: 0,

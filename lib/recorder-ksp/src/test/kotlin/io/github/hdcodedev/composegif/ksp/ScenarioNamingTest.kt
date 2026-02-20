@@ -5,8 +5,8 @@ import kotlin.test.assertEquals
 
 class ScenarioNamingTest {
     @Test
-    fun convertsCamelCaseToSnakeCase() {
-        assertEquals("line_chart_demo", ScenarioNaming.defaultName("LineChartDemo"))
+    fun keepsFunctionNameAsIs() {
+        assertEquals("LineChartDemo", ScenarioNaming.defaultName("LineChartDemo"))
     }
 
     @Test

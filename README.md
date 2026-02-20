@@ -69,8 +69,8 @@ Rules:
 import androidx.compose.runtime.Composable
 import io.github.hdcodedev.composegif.annotations.RecordGif
 
+@RecordGif
 @Composable
-@RecordGif(name = "my_new_animation", durationMs = 2200)
 fun MyNewAnimationScenario() {
     // UI content
 }
@@ -89,7 +89,6 @@ import io.github.hdcodedev.composegif.annotations.GifSwipeDirection
 import io.github.hdcodedev.composegif.annotations.GifSwipeDistance
 import io.github.hdcodedev.composegif.annotations.RecordGif
 
-@Composable
 @RecordGif(
     name = "line_chart_with_interaction",
     durationMs = 2600,
@@ -112,6 +111,7 @@ import io.github.hdcodedev.composegif.annotations.RecordGif
         ),
     ],
 )
+@Composable
 fun LineChartWithInteraction() {
     // UI content
 }
