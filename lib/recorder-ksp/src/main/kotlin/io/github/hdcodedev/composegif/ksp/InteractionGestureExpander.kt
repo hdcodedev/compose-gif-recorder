@@ -1,5 +1,7 @@
 package io.github.hdcodedev.composegif.ksp
 
+import io.github.hdcodedev.composegif.annotations.GifSwipeSpeed
+
 internal data class InteractionSpec(
     val type: String,
     val frames: Int = 0,
@@ -7,6 +9,7 @@ internal data class InteractionSpec(
     val target: String = "CENTER",
     val direction: String = "LEFT_TO_RIGHT",
     val distance: String = "MEDIUM",
+    val speed: GifSwipeSpeed = GifSwipeSpeed.CUSTOM,
     val travelFrames: Int = 8,
     val holdStartFrames: Int = 0,
     val releaseFrames: Int = 0,
@@ -53,14 +56,15 @@ internal object InteractionGestureExpander {
             "SWIPE" -> {
                 val swipePoints =
                     swipePoints(target = spec.target, direction = spec.direction, distance = spec.distance)
+                val timing = swipeTiming(spec)
                 buildList {
                     add(
                         GestureSpec(
                             type = "DRAG_PATH",
                             points = swipePoints,
-                            holdStartFrames = spec.holdStartFrames,
-                            framesPerWaypoint = spec.travelFrames,
-                            releaseFrames = spec.releaseFrames,
+                            holdStartFrames = timing.holdStartFrames,
+                            framesPerWaypoint = timing.travelFrames,
+                            releaseFrames = timing.releaseFrames,
                         ),
                     )
                     if (spec.framesAfter > 0) {
@@ -132,4 +136,29 @@ internal object InteractionGestureExpander {
                 )
         }
     }
+
+    private fun swipeTiming(spec: InteractionSpec): SwipeTiming =
+        if (spec.speed == GifSwipeSpeed.CUSTOM) {
+            SwipeTiming(
+                travelFrames = spec.travelFrames,
+                holdStartFrames = spec.holdStartFrames,
+                releaseFrames = spec.releaseFrames,
+            )
+        } else {
+            speedToTiming(spec.speed)
+        }
+
+    private fun speedToTiming(speed: GifSwipeSpeed): SwipeTiming =
+        when (speed) {
+            GifSwipeSpeed.FAST -> SwipeTiming(travelFrames = 24, holdStartFrames = 10, releaseFrames = 10)
+            GifSwipeSpeed.NORMAL -> SwipeTiming(travelFrames = 36, holdStartFrames = 24, releaseFrames = 24)
+            GifSwipeSpeed.SLOW -> SwipeTiming(travelFrames = 56, holdStartFrames = 44, releaseFrames = 44)
+            GifSwipeSpeed.CUSTOM -> error("CUSTOM should be handled before speed mapping")
+        }
 }
+
+private data class SwipeTiming(
+    val travelFrames: Int,
+    val holdStartFrames: Int,
+    val releaseFrames: Int,
+)

@@ -88,11 +88,13 @@ import io.github.hdcodedev.composegif.annotations.GifInteractionTarget
 import io.github.hdcodedev.composegif.annotations.GifInteractionType
 import io.github.hdcodedev.composegif.annotations.GifSwipeDirection
 import io.github.hdcodedev.composegif.annotations.GifSwipeDistance
+import io.github.hdcodedev.composegif.annotations.GifSwipeSpeed
 import io.github.hdcodedev.composegif.annotations.RecordGif
 
 @RecordGif(
     name = "line_chart_with_interaction",
     durationMs = 2600,
+    interactionStartDelayMs = 1000,
     interactionNodeTag = "LineChartPlot",
     interactions = [
         GifInteraction(type = GifInteractionType.PAUSE, frames = 24),
@@ -101,9 +103,7 @@ import io.github.hdcodedev.composegif.annotations.RecordGif
             target = GifInteractionTarget.CENTER,
             direction = GifSwipeDirection.LEFT_TO_RIGHT,
             distance = GifSwipeDistance.MEDIUM,
-            travelFrames = 8,
-            holdStartFrames = 8,
-            releaseFrames = 8,
+            speed = GifSwipeSpeed.NORMAL,
         ),
         GifInteraction(
             type = GifInteractionType.TAP,
@@ -120,6 +120,11 @@ fun LineChartWithInteraction() {
 
 `interactionNodeTag` must match a test tag in your composable tree.
 `interactions` are expanded to deterministic low-level gestures by the KSP generator.
+`interactionStartDelayMs` defaults to `1000` (1 second) so entry animations can settle before interactions begin.
+Set `interactionStartDelayMs = 0` if you want interactions to start immediately.
+`durationMs` is treated as a minimum. If configured interactions need more time, the recorder extends effective duration automatically.
+For swipes, prefer `speed = GifSwipeSpeed.FAST|NORMAL|SLOW` for high-level timing presets.
+Use `speed = GifSwipeSpeed.CUSTOM` with `travelFrames` / `holdStartFrames` / `releaseFrames` only when you need exact frame-level control.
 
 If you need exact control, `gestures` (coordinate-based) is still available as an advanced API.
 
