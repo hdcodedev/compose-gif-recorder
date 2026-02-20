@@ -21,7 +21,7 @@
 ## Motivation
 
 This plugin was originally created to automate GIF generation
-for the Compose [Charts wiki documentation](https://charts.harisdautovic.com/2.2.0/wiki/examples).
+for the [Charts wiki documentation](https://charts.harisdautovic.com/2.2.0/wiki/examples).
 
 Whenever chart styles, animations, or APIs change,
 all documentation GIFs can be easily regenerated in an automated way.
